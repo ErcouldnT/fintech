@@ -1,50 +1,87 @@
 <script lang="ts">
 	import { Modal, Combobox } from '@skeletonlabs/skeleton-svelte';
 
-	const faiz = 1.49;
 	let { data } = $props();
-	let openStateModal1 = $state(false);
-	let openStateModal2 = $state(false);
-	let table = $state([]);
-	let selectedCountry = $state(['US']);
 
-	interface Gelir {
+	// Gelir
+	interface GelirData {
 		with: 'cash' | 'card';
 		amount: number;
 	}
 
-	interface Gider {
+	const faiz = 1.49;
+	let gelirStateModal = $state(false);
+	let gelirMiktar = $state(0);
+	let selectedGelirTipi: 'cash' | 'card' = $state('cash');
+	let allGelirs: GelirData[] = $state([]);
+
+	function gelirModalClose() {
+		gelirMiktar = 0;
+		selectedGelirTipi = 'cash';
+		gelirStateModal = false;
+	}
+
+	const gelirEkle = () => {
+		const gelir: GelirData = {
+			with: selectedGelirTipi,
+			amount: gelirMiktar
+		};
+
+		allGelirs.push(gelir);
+
+		gelirModalClose();
+	};
+
+	// Gider
+	interface GiderData {
 		item: string;
-		with: 'cash' | 'card';
 		amount: number;
+		with: 'cash' | 'card';
 	}
 
-	interface ComboxData {
+	let giderStateModal = $state(false);
+	let selectedGiderKalemi = $state(['tost']);
+	let giderMiktar = $state(0);
+	let selectedGiderTipi: 'cash' | 'card' = $state('cash');
+	let allGiders: GiderData[] = $state([]);
+
+	interface GiderKalemi {
 		label: string;
 		value: string;
 	}
 
-	const comboboxData: ComboxData[] = [
-		{ label: 'United States', value: 'US' },
-		{ label: 'Germany', value: 'DE' },
-		{ label: 'Japan', value: 'JP' }
+	const comboboxData: GiderKalemi[] = [
+		{ label: 'Tost ekmeği', value: 'tost' },
+		{ label: 'Elektrik faturası', value: 'elektrik' },
+		{ label: 'Su faturası', value: 'su' },
+		{ label: 'Doğalgaz faturası', value: 'gaz' },
+		{ label: 'Diğer', value: 'diğer' }
 	];
 
-	function modal1Close() {
-		openStateModal1 = false;
+	function giderModalClose() {
+		giderMiktar = 0;
+		selectedGiderTipi = 'cash';
+		selectedGiderKalemi = ['tost'];
+		giderStateModal = false;
 	}
 
-	function modal2Close() {
-		openStateModal2 = false;
-	}
+	const giderEkle = () => {
+		const gider: GiderData = {
+			item: selectedGiderKalemi[0],
+			with: selectedGiderTipi,
+			amount: giderMiktar
+		};
+
+		allGiders.push(gider);
+
+		giderModalClose();
+	};
 </script>
 
-<h1 class="text-center">{new Date(data.date).toDateString()}</h1>
-
-<pre>{table}</pre>
+<h1 class="p-3 text-center">{new Date(data.date).toDateString()}</h1>
 
 <Modal
-	bind:open={openStateModal1}
+	bind:open={gelirStateModal}
 	triggerBase="btn preset-tonal"
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
 	backdropClasses="backdrop-blur-sm"
@@ -54,18 +91,45 @@
 		<header class="flex justify-between">
 			<h2 class="h2">Gelir ekle</h2>
 		</header>
-		<article>
-			<p class="opacity-60">Gelir ekliyorsunuz</p>
-		</article>
+		<label class="label">
+			<span class="label-text">Fiyat</span>
+			<input bind:value={gelirMiktar} class="input" type="text" placeholder="0" />
+		</label>
+
+		<div class="space-y-1">
+			<label class="flex items-center space-x-2">
+				<input
+					bind:group={selectedGelirTipi}
+					class="radio"
+					type="radio"
+					checked
+					name="radio-direct"
+					value="cash"
+				/>
+				<p>Nakit</p>
+			</label>
+			<label class="flex items-center space-x-2">
+				<input
+					bind:group={selectedGelirTipi}
+					class="radio"
+					type="radio"
+					name="radio-direct"
+					value="card"
+				/>
+				<p>Kredi kartı</p>
+			</label>
+
+			<p class="text-right text-sm">Kart faiz %{faiz}</p>
+		</div>
 		<footer class="flex justify-end gap-4">
-			<button type="button" class="btn preset-tonal" onclick={modal1Close}>İptal</button>
-			<button type="button" class="btn preset-filled" onclick={modal1Close}>Ekle</button>
+			<button type="button" class="btn preset-tonal" onclick={gelirModalClose}>İptal</button>
+			<button type="button" class="btn preset-filled" onclick={gelirEkle}>Ekle</button>
 		</footer>
 	{/snippet}
 </Modal>
 
 <Modal
-	bind:open={openStateModal2}
+	bind:open={giderStateModal}
 	triggerBase="btn preset-tonal"
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
 	backdropClasses="backdrop-blur-sm"
@@ -75,19 +139,49 @@
 		<header class="flex justify-between">
 			<h2 class="h2">Gider ekle</h2>
 		</header>
-		<article>
+		<div class="space-y-4">
 			<Combobox
 				data={comboboxData}
-				bind:value={selectedCountry}
+				bind:value={selectedGiderKalemi}
 				label="Gider kalemi"
 				placeholder="Seç..."
 			/>
-		</article>
+
+			<label class="label">
+				<span class="label-text">Fiyat</span>
+				<input bind:value={giderMiktar} class="input" type="text" placeholder="0" />
+			</label>
+
+			<div class="space-y-1">
+				<label class="flex items-center space-x-2">
+					<input
+						bind:group={selectedGiderTipi}
+						class="radio"
+						type="radio"
+						checked
+						name="radio-direct"
+						value="cash"
+					/>
+					<p>Nakit</p>
+				</label>
+				<label class="flex items-center space-x-2">
+					<input
+						bind:group={selectedGiderTipi}
+						class="radio"
+						type="radio"
+						name="radio-direct"
+						value="card"
+					/>
+					<p>Kredi kartı</p>
+				</label>
+			</div>
+		</div>
 		<footer class="flex justify-end gap-4">
-			<button type="button" class="btn preset-tonal" onclick={modal2Close}>İptal</button>
-			<button type="button" class="btn preset-filled" onclick={modal2Close}>Ekle</button>
+			<button type="button" class="btn preset-tonal" onclick={giderModalClose}>İptal</button>
+			<button type="button" class="btn preset-filled" onclick={giderEkle}>Ekle</button>
 		</footer>
 	{/snippet}
 </Modal>
 
-<p class="text-right text-sm">Kart faiz %{faiz}</p>
+<pre>{JSON.stringify(allGelirs, null, 2)}</pre>
+<pre>{JSON.stringify(allGiders, null, 2)}</pre>
