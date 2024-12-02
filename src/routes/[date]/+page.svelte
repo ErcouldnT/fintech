@@ -6,7 +6,7 @@
 	// Gelir
 	interface GelirData {
 		with: 'cash' | 'card';
-		amount: number;
+		price: number;
 	}
 
 	const faiz = 1.49;
@@ -24,7 +24,7 @@
 	const gelirEkle = () => {
 		const gelir: GelirData = {
 			with: selectedGelirTipi,
-			amount: gelirMiktar
+			price: gelirMiktar
 		};
 
 		allGelirs.push(gelir);
@@ -35,7 +35,7 @@
 	// Gider
 	interface GiderData {
 		item: string;
-		amount: number;
+		price: number;
 		with: 'cash' | 'card';
 	}
 
@@ -69,7 +69,7 @@
 		const gider: GiderData = {
 			item: selectedGiderKalemi[0],
 			with: selectedGiderTipi,
-			amount: giderMiktar
+			price: giderMiktar
 		};
 
 		allGiders.push(gider);
