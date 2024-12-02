@@ -7,6 +7,7 @@
 	interface GelirData {
 		with: 'CASH' | 'CARD';
 		price: number;
+		date: string;
 	}
 
 	const faiz = 1.49;
@@ -24,11 +25,11 @@
 	const gelirEkle = () => {
 		const gelir: GelirData = {
 			with: selectedGelirTipi,
-			price: gelirMiktar
+			price: gelirMiktar,
+			date: data.date
 		};
 
 		allGelirs.push(gelir);
-
 		gelirModalClose();
 	};
 
@@ -37,6 +38,7 @@
 		item: string;
 		price: number;
 		with: 'CASH' | 'CARD';
+		date: string;
 	}
 
 	let giderStateModal = $state(false);
@@ -69,11 +71,11 @@
 		const gider: GiderData = {
 			item: selectedGiderKalemi[0],
 			with: selectedGiderTipi,
-			price: giderMiktar
+			price: giderMiktar,
+			date: data.date
 		};
 
 		allGiders.push(gider);
-
 		giderModalClose();
 	};
 </script>
@@ -91,40 +93,44 @@
 		<header class="flex justify-between">
 			<h2 class="h2">Gelir ekle</h2>
 		</header>
-		<label class="label">
-			<span class="label-text">Fiyat</span>
-			<input bind:value={gelirMiktar} class="input" type="text" placeholder="0" />
-		</label>
 
-		<div class="space-y-1">
-			<label class="flex items-center space-x-2">
-				<input
-					bind:group={selectedGelirTipi}
-					class="radio"
-					type="radio"
-					checked
-					name="radio-direct"
-					value="cash"
-				/>
-				<p>Nakit</p>
-			</label>
-			<label class="flex items-center space-x-2">
-				<input
-					bind:group={selectedGelirTipi}
-					class="radio"
-					type="radio"
-					name="radio-direct"
-					value="card"
-				/>
-				<p>Kredi kartı</p>
+		<form class="space-y-4" onsubmit={gelirEkle}>
+			<label class="label">
+				<span class="label-text">Fiyat</span>
+				<input bind:value={gelirMiktar} class="input" type="text" placeholder="0" />
 			</label>
 
-			<p class="text-right text-sm">Kart faiz %{faiz}</p>
-		</div>
-		<footer class="flex justify-end gap-4">
-			<button type="button" class="btn preset-tonal" onclick={gelirModalClose}>İptal</button>
-			<button type="button" class="btn preset-filled" onclick={gelirEkle}>Ekle</button>
-		</footer>
+			<div class="space-y-1">
+				<label class="flex items-center space-x-2">
+					<input
+						bind:group={selectedGelirTipi}
+						class="radio"
+						type="radio"
+						checked
+						name="radio-direct"
+						value="CASH"
+					/>
+					<p>Nakit</p>
+				</label>
+
+				<label class="flex items-center space-x-2">
+					<input
+						bind:group={selectedGelirTipi}
+						class="radio"
+						type="radio"
+						name="radio-direct"
+						value="card"
+					/>
+					<p>Kredi kartı</p>
+				</label>
+
+				<p class="text-right text-sm">Kart faiz %{faiz}</p>
+			</div>
+			<footer class="flex justify-end gap-4">
+				<button type="button" class="btn preset-tonal" onclick={gelirModalClose}>İptal</button>
+				<button type="button" class="btn preset-filled" onclick={gelirEkle}>Ekle</button>
+			</footer>
+		</form>
 	{/snippet}
 </Modal>
 
@@ -160,7 +166,7 @@
 						type="radio"
 						checked
 						name="radio-direct"
-						value="cash"
+						value="CASH"
 					/>
 					<p>Nakit</p>
 				</label>
