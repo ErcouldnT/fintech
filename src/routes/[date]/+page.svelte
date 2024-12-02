@@ -1,20 +1,20 @@
 <script lang="ts">
 	import { Modal, Combobox } from '@skeletonlabs/skeleton-svelte';
+	import type {
+		InsertIncome,
+		InsertOutgoing,
+		SelectIncome,
+		SelectOutgoing
+	} from '$lib/server/db/schema';
 
 	let { data } = $props();
 
 	// Gelir
-	interface GelirData {
-		with: 'CASH' | 'CARD';
-		price: number;
-		date: string;
-	}
-
 	const faiz = 1.49;
 	let gelirStateModal = $state(false);
 	let gelirMiktar = $state(0);
 	let selectedGelirTipi: 'CASH' | 'CARD' = $state('CASH');
-	let allGelirs: GelirData[] = $state([]);
+	let allGelirs: SelectIncome[] = $state(data.incomes);
 
 	function gelirModalClose() {
 		gelirMiktar = 0;
@@ -22,30 +22,31 @@
 		gelirStateModal = false;
 	}
 
-	const gelirEkle = () => {
-		const gelir: GelirData = {
+	const gelirEkle = async () => {
+		const gelir: InsertIncome = {
 			with: selectedGelirTipi,
 			price: gelirMiktar,
 			date: data.date
 		};
+
+		await fetch('/api/income', {
+			method: 'POST',
+			body: JSON.stringify(gelir),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
 
 		allGelirs.push(gelir);
 		gelirModalClose();
 	};
 
 	// Gider
-	interface GiderData {
-		item: string;
-		price: number;
-		with: 'CASH' | 'CARD';
-		date: string;
-	}
-
 	let giderStateModal = $state(false);
 	let selectedGiderKalemi = $state(['tost']);
 	let giderMiktar = $state(0);
 	let selectedGiderTipi: 'CASH' | 'CARD' = $state('CASH');
-	let allGiders: GiderData[] = $state([]);
+	let allGiders: SelectOutgoing[] = $state(data.outgoings);
 
 	interface GiderKalemi {
 		label: string;
@@ -67,13 +68,21 @@
 		giderStateModal = false;
 	}
 
-	const giderEkle = () => {
-		const gider: GiderData = {
+	const giderEkle = async () => {
+		const gider: InsertOutgoing = {
 			item: selectedGiderKalemi[0],
 			with: selectedGiderTipi,
 			price: giderMiktar,
 			date: data.date
 		};
+
+		await fetch('/api/outgoing', {
+			method: 'POST',
+			body: JSON.stringify(gider),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
 
 		allGiders.push(gider);
 		giderModalClose();
@@ -94,43 +103,41 @@
 			<h2 class="h2">Gelir ekle</h2>
 		</header>
 
-		<form class="space-y-4" onsubmit={gelirEkle}>
-			<label class="label">
-				<span class="label-text">Fiyat</span>
-				<input bind:value={gelirMiktar} class="input" type="text" placeholder="0" />
+		<label class="label">
+			<span class="label-text">Fiyat</span>
+			<input bind:value={gelirMiktar} class="input" type="text" placeholder="0" />
+		</label>
+
+		<div class="space-y-1">
+			<label class="flex items-center space-x-2">
+				<input
+					bind:group={selectedGelirTipi}
+					class="radio"
+					type="radio"
+					checked
+					name="radio-direct"
+					value="CASH"
+				/>
+				<p>Nakit</p>
 			</label>
 
-			<div class="space-y-1">
-				<label class="flex items-center space-x-2">
-					<input
-						bind:group={selectedGelirTipi}
-						class="radio"
-						type="radio"
-						checked
-						name="radio-direct"
-						value="CASH"
-					/>
-					<p>Nakit</p>
-				</label>
+			<label class="flex items-center space-x-2">
+				<input
+					bind:group={selectedGelirTipi}
+					class="radio"
+					type="radio"
+					name="radio-direct"
+					value="CARD"
+				/>
+				<p>Kredi kartı</p>
+			</label>
 
-				<label class="flex items-center space-x-2">
-					<input
-						bind:group={selectedGelirTipi}
-						class="radio"
-						type="radio"
-						name="radio-direct"
-						value="card"
-					/>
-					<p>Kredi kartı</p>
-				</label>
-
-				<p class="text-right text-sm">Kart faiz %{faiz}</p>
-			</div>
-			<footer class="flex justify-end gap-4">
-				<button type="button" class="btn preset-tonal" onclick={gelirModalClose}>İptal</button>
-				<button type="button" class="btn preset-filled" onclick={gelirEkle}>Ekle</button>
-			</footer>
-		</form>
+			<p class="text-right text-sm">Kart faiz %{faiz}</p>
+		</div>
+		<footer class="flex justify-end gap-4">
+			<button type="button" class="btn preset-tonal" onclick={gelirModalClose}>İptal</button>
+			<button type="button" class="btn preset-filled" onclick={gelirEkle}>Ekle</button>
+		</footer>
 	{/snippet}
 </Modal>
 
@@ -176,7 +183,7 @@
 						class="radio"
 						type="radio"
 						name="radio-direct"
-						value="card"
+						value="CARD"
 					/>
 					<p>Kredi kartı</p>
 				</label>
