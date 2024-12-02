@@ -5,19 +5,19 @@
 
 	// Gelir
 	interface GelirData {
-		with: 'cash' | 'card';
+		with: 'CASH' | 'CARD';
 		price: number;
 	}
 
 	const faiz = 1.49;
 	let gelirStateModal = $state(false);
 	let gelirMiktar = $state(0);
-	let selectedGelirTipi: 'cash' | 'card' = $state('cash');
+	let selectedGelirTipi: 'CASH' | 'CARD' = $state('CASH');
 	let allGelirs: GelirData[] = $state([]);
 
 	function gelirModalClose() {
 		gelirMiktar = 0;
-		selectedGelirTipi = 'cash';
+		selectedGelirTipi = 'CASH';
 		gelirStateModal = false;
 	}
 
@@ -36,13 +36,13 @@
 	interface GiderData {
 		item: string;
 		price: number;
-		with: 'cash' | 'card';
+		with: 'CASH' | 'CARD';
 	}
 
 	let giderStateModal = $state(false);
 	let selectedGiderKalemi = $state(['tost']);
 	let giderMiktar = $state(0);
-	let selectedGiderTipi: 'cash' | 'card' = $state('cash');
+	let selectedGiderTipi: 'CASH' | 'CARD' = $state('CASH');
 	let allGiders: GiderData[] = $state([]);
 
 	interface GiderKalemi {
@@ -60,7 +60,7 @@
 
 	function giderModalClose() {
 		giderMiktar = 0;
-		selectedGiderTipi = 'cash';
+		selectedGiderTipi = 'CASH';
 		selectedGiderKalemi = ['tost'];
 		giderStateModal = false;
 	}
