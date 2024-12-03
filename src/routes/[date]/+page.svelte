@@ -7,7 +7,7 @@
 		SelectOutgoing
 	} from '$lib/server/db/schema';
 	import items from '$lib/items';
-	import { Minus, Plus } from 'lucide-svelte';
+	import { CreditCard, Minus, Plus, Banknote } from 'lucide-svelte';
 
 	let { data } = $props();
 
@@ -29,9 +29,13 @@
 	}
 
 	const gelirEkle = async () => {
+		if (selectedGelirTipi === 'CARD') {
+			gelirMiktar = (gelirMiktar * (100 - faiz)) / 100;
+		}
+
 		const gelir: InsertIncome = {
 			with: selectedGelirTipi,
-			price: gelirMiktar,
+			price: String(gelirMiktar),
 			date: data.date
 		};
 
@@ -73,7 +77,7 @@
 		const gider: InsertOutgoing = {
 			item: selectedGiderKalemi[0],
 			with: selectedGiderTipi,
-			price: giderMiktar,
+			price: String(giderMiktar),
 			date: data.date
 		};
 
@@ -90,46 +94,52 @@
 		reloadPage();
 	};
 
-	const tableData = [
-		{ position: '0', name: 'Iron', symbol: 'Fe', atomic_no: '26' },
-		{ position: '1', name: 'Rhodium', symbol: 'Rh', atomic_no: '45' },
-		{ position: '2', name: 'Iodine', symbol: 'I', atomic_no: '53' },
-		{ position: '3', name: 'Radon', symbol: 'Rn', atomic_no: '86' },
-		{ position: '4', name: 'Technetium', symbol: 'Tc', atomic_no: '43' }
-	];
+	const toplamGelirHesapla = () => {
+		let toplam = 0;
+		for (const gelir of allGelirs) {
+			toplam = toplam + Number(gelir.price);
+		}
+		return toplam;
+	};
+
+	const toplamGiderHesapla = () => {
+		let toplam = 0;
+		for (const gider of allGiders) {
+			toplam = toplam + Number(gider.price);
+		}
+		return toplam;
+	};
 </script>
 
-<div class="table-wrap mb-5">
+<h1 class="text-center">{new Date(data.date).toDateString()}</h1>
+
+<div class="table-wrap pb-4">
 	<table class="table caption-top">
-		<caption class="pt-4">{new Date(data.date).toDateString()}</caption>
+		<caption class="pt-4">Gelir durumu</caption>
 		<thead>
 			<tr>
-				<th>Position</th>
-				<th>Symbol</th>
-				<th>Name</th>
-				<th class="!text-right">Weight</th>
+				<th class="!text-right"></th>
+				<th class="!text-right">Fiyat</th>
 			</tr>
 		</thead>
 		<tbody class="hover:[&>tr]:preset-tonal-primary">
-			{#if tableData && tableData.length > 0}
-				{#each tableData as row}
-					<tr>
-						<td>{row.position}</td>
-						<td>{row.symbol}</td>
-						<td>{row.name}</td>
-						<td class="text-right">{row.atomic_no}</td>
+			{#if allGelirs && allGelirs.length > 0}
+				{#each allGelirs as gelir}
+					<tr class="!text-right">
+						<td> {gelir.with === 'CARD' ? 'POS' : 'Nakit'}</td>
+						<td>{gelir.price} ₺</td>
 					</tr>
 				{/each}
 			{:else}
 				<tr>
-					<td colspan="4" class="text-center">No data available</td>
+					<td colspan="4" class="text-center">Lütfen veri giriniz.</td>
 				</tr>
 			{/if}
 		</tbody>
 		<tfoot>
 			<tr>
-				<td colspan="3">Toplam</td>
-				<td class="text-right">{tableData.length} adet</td>
+				<td colspan="1">Toplam</td>
+				<td class="text-right">{toplamGelirHesapla()} ₺</td>
 			</tr>
 		</tfoot>
 	</table>
@@ -185,6 +195,42 @@
 		</footer>
 	{/snippet}
 </Modal>
+
+<div class="table-wrap pb-4">
+	<table class="table caption-top">
+		<caption class="pt-4">Gider durumu</caption>
+		<thead>
+			<tr>
+				<th class="!text-right"></th>
+				<th class="!text-right"></th>
+				<th class="!text-right">Fiyat</th>
+			</tr>
+		</thead>
+		<tbody class="hover:[&>tr]:preset-tonal-primary">
+			{#if allGiders && allGiders.length > 0}
+				{#each allGiders as gider}
+					<tr class="!text-right">
+						<td>{gider.item}</td>
+						<td class="!text-right"
+							>{#if gider.with === 'CARD'}<CreditCard color="orange" />{/if}</td
+						>
+						<td>{gider.price} ₺</td>
+					</tr>
+				{/each}
+			{:else}
+				<tr>
+					<td colspan="4" class="text-center">Lütfen veri giriniz.</td>
+				</tr>
+			{/if}
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="2">Toplam</td>
+				<td class="text-right">{toplamGiderHesapla()} ₺</td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
 
 <Modal
 	bind:open={giderStateModal}

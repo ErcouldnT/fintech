@@ -1,4 +1,4 @@
-import { pgTable, pgEnum, text, integer, serial, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, pgEnum, text, numeric, serial, timestamp } from 'drizzle-orm/pg-core';
 import { shoppingList } from '../../items';
 
 export const withEnum = pgEnum('with', ['CASH', 'CARD']);
@@ -7,7 +7,7 @@ export const itemEnum = pgEnum('item', shoppingList);
 export const incomesTable = pgTable('incomes', {
 	id: serial('id').primaryKey(),
 	date: text('date').notNull(),
-	price: integer('price').notNull(),
+	price: numeric('price').notNull(),
 	with: withEnum('with').notNull(),
 	createdAt: timestamp('created_at').notNull().defaultNow(),
 	updatedAt: timestamp('updated_at')
@@ -19,7 +19,7 @@ export const outgoingsTable = pgTable('outgoings', {
 	id: serial('id').primaryKey(),
 	date: text('date').notNull(),
 	item: itemEnum('item').notNull(),
-	price: integer('price').notNull(),
+	price: numeric('price').notNull(),
 	with: withEnum('with').notNull(),
 	createdAt: timestamp('created_at').notNull().defaultNow(),
 	updatedAt: timestamp('updated_at')
