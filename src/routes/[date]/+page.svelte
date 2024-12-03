@@ -29,8 +29,10 @@
 	}
 
 	const gelirEkle = async () => {
+		if (gelirMiktar < 1) return;
+
 		if (selectedGelirTipi === 'CARD') {
-			gelirMiktar = (gelirMiktar * (100 - faiz)) / 100;
+			gelirMiktar = Number(((gelirMiktar * (100 - faiz)) / 100).toFixed(2));
 		}
 
 		const gelir: InsertIncome = {
@@ -74,6 +76,8 @@
 	}
 
 	const giderEkle = async () => {
+		if (giderMiktar < 1) return;
+
 		const gider: InsertOutgoing = {
 			item: selectedGiderKalemi[0],
 			with: selectedGiderTipi,
@@ -99,7 +103,7 @@
 		for (const gelir of allGelirs) {
 			toplam = toplam + Number(gelir.price);
 		}
-		return toplam;
+		return toplam.toFixed(2);
 	};
 
 	const toplamGiderHesapla = () => {
@@ -107,7 +111,7 @@
 		for (const gider of allGiders) {
 			toplam = toplam + Number(gider.price);
 		}
-		return toplam;
+		return toplam.toFixed(2);
 	};
 </script>
 
@@ -127,7 +131,7 @@
 				{#each allGelirs as gelir}
 					<tr class="!text-right">
 						<td> {gelir.with === 'CARD' ? 'POS' : 'Nakit'}</td>
-						<td>{gelir.price} ₺</td>
+						<td>{Number(gelir.price).toFixed(2)} ₺</td>
 					</tr>
 				{/each}
 			{:else}
@@ -214,7 +218,7 @@
 						<td class="!text-right"
 							>{#if gider.with === 'CARD'}<CreditCard color="orange" />{/if}</td
 						>
-						<td>{gider.price} ₺</td>
+						<td>{Number(gider.price).toFixed(2)} ₺</td>
 					</tr>
 				{/each}
 			{:else}
