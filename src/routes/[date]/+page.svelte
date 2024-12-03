@@ -6,8 +6,13 @@
 		SelectIncome,
 		SelectOutgoing
 	} from '$lib/server/db/schema';
+	import items from '$lib/items';
 
 	let { data } = $props();
+
+	const reloadPage = () => {
+		window.location.href = '/' + data.date;
+	};
 
 	// Gelir
 	const faiz = 1.49;
@@ -37,8 +42,9 @@
 			}
 		});
 
-		allGelirs.push(gelir);
+		// allGelirs.push(gelir);
 		gelirModalClose();
+		reloadPage();
 	};
 
 	// Gider
@@ -53,13 +59,7 @@
 		value: string;
 	}
 
-	const comboboxData: GiderKalemi[] = [
-		{ label: 'Tost ekmeği', value: 'tost' },
-		{ label: 'Elektrik faturası', value: 'elektrik' },
-		{ label: 'Su faturası', value: 'su' },
-		{ label: 'Doğalgaz faturası', value: 'gaz' },
-		{ label: 'Diğer', value: 'diğer' }
-	];
+	const comboboxData: GiderKalemi[] = items;
 
 	function giderModalClose() {
 		giderMiktar = 0;
@@ -84,8 +84,9 @@
 			}
 		});
 
-		allGiders.push(gider);
+		// allGiders.push(gider);
 		giderModalClose();
+		reloadPage();
 	};
 </script>
 
