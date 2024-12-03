@@ -7,6 +7,7 @@
 		SelectOutgoing
 	} from '$lib/server/db/schema';
 	import items from '$lib/items';
+	import { Minus, Plus } from 'lucide-svelte';
 
 	let { data } = $props();
 
@@ -88,9 +89,51 @@
 		giderModalClose();
 		reloadPage();
 	};
+
+	const tableData = [
+		{ position: '0', name: 'Iron', symbol: 'Fe', atomic_no: '26' },
+		{ position: '1', name: 'Rhodium', symbol: 'Rh', atomic_no: '45' },
+		{ position: '2', name: 'Iodine', symbol: 'I', atomic_no: '53' },
+		{ position: '3', name: 'Radon', symbol: 'Rn', atomic_no: '86' },
+		{ position: '4', name: 'Technetium', symbol: 'Tc', atomic_no: '43' }
+	];
 </script>
 
-<h1 class="p-3 text-center">{new Date(data.date).toDateString()}</h1>
+<div class="table-wrap mb-5">
+	<table class="table caption-top">
+		<caption class="pt-4">{new Date(data.date).toDateString()}</caption>
+		<thead>
+			<tr>
+				<th>Position</th>
+				<th>Symbol</th>
+				<th>Name</th>
+				<th class="!text-right">Weight</th>
+			</tr>
+		</thead>
+		<tbody class="hover:[&>tr]:preset-tonal-primary">
+			{#if tableData && tableData.length > 0}
+				{#each tableData as row}
+					<tr>
+						<td>{row.position}</td>
+						<td>{row.symbol}</td>
+						<td>{row.name}</td>
+						<td class="text-right">{row.atomic_no}</td>
+					</tr>
+				{/each}
+			{:else}
+				<tr>
+					<td colspan="4" class="text-center">No data available</td>
+				</tr>
+			{/if}
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="3">Toplam</td>
+				<td class="text-right">{tableData.length} adet</td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
 
 <Modal
 	bind:open={gelirStateModal}
@@ -98,10 +141,11 @@
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
 	backdropClasses="backdrop-blur-sm"
 >
-	{#snippet trigger()}Gelir ekle{/snippet}
+	{#snippet trigger()}Gelir ekle <Plus />{/snippet}
 	{#snippet content()}
-		<header class="flex justify-between">
-			<h2 class="h2">Gelir ekle</h2>
+		<header class="flex flex-row items-center">
+			<h2 class="h2">Gelir</h2>
+			<Plus />
 		</header>
 
 		<label class="label">
@@ -148,10 +192,11 @@
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
 	backdropClasses="backdrop-blur-sm"
 >
-	{#snippet trigger()}Gider ekle{/snippet}
+	{#snippet trigger()}Gider ekle <Minus />{/snippet}
 	{#snippet content()}
-		<header class="flex justify-between">
-			<h2 class="h2">Gider ekle</h2>
+		<header class="flex items-center">
+			<h2 class="h2">Gider</h2>
+			<Minus />
 		</header>
 		<div class="space-y-4">
 			<Combobox
@@ -197,5 +242,5 @@
 	{/snippet}
 </Modal>
 
-<pre>{JSON.stringify(allGelirs, null, 2)}</pre>
-<pre>{JSON.stringify(allGiders, null, 2)}</pre>
+<!--<pre>{JSON.stringify(allGelirs, null, 2)}</pre>-->
+<!--<pre>{JSON.stringify(allGiders, null, 2)}</pre>-->
