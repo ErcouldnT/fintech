@@ -14,7 +14,7 @@
 	let { data } = $props();
 
 	const reloadPage = () => {
-		window.location.href = '/' + data.date;
+		window.location.href = '/' + dateToSlug(data.date);
 	};
 
 	// Gelir
