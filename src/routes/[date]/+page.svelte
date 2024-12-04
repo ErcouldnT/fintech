@@ -9,6 +9,7 @@
 	import items from '$lib/items';
 	import { ChevronLeft, ChevronRight, CreditCard, Minus, Plus } from 'lucide-svelte';
 	import GoToDate from '$lib/components/GoToDate.svelte';
+	import { dateToSlug, nextDay, previousDay } from '$lib/utils/dateFormat';
 
 	let { data } = $props();
 
@@ -39,7 +40,7 @@
 		const gelir: InsertIncome = {
 			with: selectedGelirTipi,
 			price: String(gelirMiktar),
-			date: data.date
+			date: dateToSlug(data.date)
 		};
 
 		await fetch('/api/income', {
@@ -83,7 +84,7 @@
 			item: selectedGiderKalemi[0],
 			with: selectedGiderTipi,
 			price: String(giderMiktar),
-			date: data.date
+			date: dateToSlug(data.date)
 		};
 
 		await fetch('/api/outgoing', {
@@ -116,18 +117,28 @@
 	};
 </script>
 
-<h1 class="text-center">{new Date(data.date).toDateString()}</h1>
+<h1 class="text-center">{dateToSlug(data.date)}</h1>
 
 <div class="flex justify-between gap-4">
-	<button type="button" class="btn preset-filled-success-500">
+	<a
+		href={'/' + previousDay(data.date)}
+		data-sveltekit-reload
+		type="button"
+		class="btn preset-filled-success-500"
+	>
 		<ChevronLeft />
 		<span>Önceki gün</span>
-	</button>
+	</a>
 
-	<button type="button" class="btn preset-filled-success-500">
+	<a
+		href={'/' + nextDay(data.date)}
+		data-sveltekit-reload
+		type="button"
+		class="btn preset-filled-success-500"
+	>
 		<span>Sonraki gün</span>
 		<ChevronRight />
-	</button>
+	</a>
 </div>
 
 <div class="table-wrap pb-4">

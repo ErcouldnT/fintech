@@ -1,15 +1,27 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { dateToSlug } from '$lib/utils/dateFormat';
 
-	let date: Date = $state(new Date());
+	// This will hold the date in string format ("YYYY-MM-DD")
+	let dateString: string = new Date().toISOString().split('T')[0];
+
+	// This function converts the dateString to a Date object when needed
+	function updateDate(event: Event) {
+		const input = event.target as HTMLInputElement;
+		dateString = input.value;
+	}
 </script>
 
 <label class="label">
 	<span class="label-text">Tarih seç</span>
-	<input bind:value={date} class="input" type="date" />
+	<input bind:value={dateString} class="input" type="date" on:input={updateDate} />
 </label>
 
-<a data-sveltekit-reload href={'/' + date.toString()} type="button" class="btn preset-filled">
+<a
+	data-sveltekit-reload
+	href={'/' + dateToSlug(new Date(dateString))}
+	type="button"
+	class="btn preset-filled"
+>
 	<span>Tarihe git</span>
 	<span>&rarr;</span>
 </a>
