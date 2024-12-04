@@ -7,7 +7,7 @@
 		SelectOutgoing
 	} from '$lib/server/db/schema';
 	import items from '$lib/items';
-	import { ChevronLeft, ChevronRight, CreditCard, Minus, Plus } from 'lucide-svelte';
+	import { ChevronLeft, ChevronRight, CreditCard, Minus, Plus, Trash } from 'lucide-svelte';
 	import { dateToSlug, nextDay, openDate, previousDay } from '$lib/utils/dateFormat';
 	import { formatter } from '$lib/utils/currencyFormat';
 
@@ -155,6 +155,17 @@
 		}
 		return formatter(toplam);
 	};
+
+	const gelirSil = async (income: SelectIncome) => {
+		await fetch('/api/income', {
+			method: 'DELETE',
+			body: JSON.stringify(income),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		reloadPage();
+	};
 </script>
 
 <div class="text-center">
@@ -186,11 +197,27 @@
 		<tbody class={allGelirs.length > 0 ? 'hover:[&>tr]:preset-tonal-primary' : ''}>
 			{#if allGelirs && allGelirs.length > 0}
 				{#each allGelirs as gelir}
-					<tr class="!text-right">
+					<tr class="group text-right">
+						<td class="text-left">
+							<button
+								onclick={() => gelirSil(gelir)}
+								class="w-2 text-center opacity-0 transition-opacity hover:text-red-500 group-hover:opacity-100"
+							>
+								<Trash size="16" />
+							</button>
+						</td>
 						<td
-							class={`${gelir.with === 'POS' ? 'text-[orange]' : ''} ${gelir.with === 'Getir' ? 'text-[#5a3bb6]' : ''} ${gelir.with === 'Trendyol' ? 'text-[#fb641f]' : ''} ${gelir.with === 'Yemeksepeti' ? 'text-[#e03052]' : ''}`}
-							>{gelir.with}</td
-						> <td>{formatter(Number(gelir.price))}</td>
+							class={gelir.with === 'POS'
+								? 'text-[orange]'
+								: '' + gelir.with === 'Getir'
+									? 'text-[#5a3bb6]'
+									: '' + gelir.with === 'Trendyol'
+										? 'text-[#fb641f]'
+										: '' + gelir.with === 'Yemeksepeti'
+											? 'text-[#e03052]'
+											: ''}>{gelir.with}</td
+						>
+						<td>{formatter(Number(gelir.price))}</td>
 					</tr>
 				{/each}
 			{:else}
@@ -201,15 +228,15 @@
 		</tbody>
 		<tfoot>
 			<tr>
-				<td colspan="1">Nakit</td>
+				<td colspan="2">Nakit</td>
 				<td class="text-right">{toplamNakitGelir()}</td>
 			</tr>
 			<tr>
-				<td colspan="1">POS</td>
+				<td colspan="2">POS</td>
 				<td class="text-right">{toplamPOSGelir()}</td>
 			</tr>
 			<tr>
-				<td colspan="1">Toplam</td>
+				<td colspan="2">Toplam</td>
 				<td class="text-right">{toplamGelirHesapla()}</td>
 			</tr>
 		</tfoot>
