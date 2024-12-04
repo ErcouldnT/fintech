@@ -121,22 +121,12 @@
 <h1 class="text-center">{dateToSlug(data.date)}</h1>
 
 <div class="flex justify-between gap-4">
-	<a
-		href={'/' + previousDay(data.date)}
-		data-sveltekit-reload
-		type="button"
-		class="btn preset-filled-success-500"
-	>
+	<a href={'/' + previousDay(data.date)} data-sveltekit-reload type="button" class="btn">
 		<ChevronLeft />
 		<span>Önceki gün</span>
 	</a>
 
-	<a
-		href={'/' + nextDay(data.date)}
-		data-sveltekit-reload
-		type="button"
-		class="btn preset-filled-success-500"
-	>
+	<a href={'/' + nextDay(data.date)} data-sveltekit-reload type="button" class="btn">
 		<span>Sonraki gün</span>
 		<ChevronRight />
 	</a>
@@ -155,7 +145,9 @@
 			{#if allGelirs && allGelirs.length > 0}
 				{#each allGelirs as gelir}
 					<tr class="!text-right">
-						<td> {gelir.with === 'CARD' ? 'POS' : 'Nakit'}</td>
+						<td class={gelir.with === 'CARD' ? 'text-[orange]' : ''}>
+							{gelir.with === 'CARD' ? 'POS' : 'Nakit'}</td
+						>
 						<td>{formatter(Number(gelir.price))}</td>
 					</tr>
 				{/each}
