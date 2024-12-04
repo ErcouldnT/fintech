@@ -162,6 +162,17 @@
 		});
 		reloadPage();
 	};
+
+	const giderSil = async (outgoing: SelectOutgoing) => {
+		await fetch('/api/outgoing', {
+			method: 'DELETE',
+			body: JSON.stringify(outgoing),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		reloadPage();
+	};
 </script>
 
 <div class="text-center">
@@ -193,7 +204,7 @@
 		<tbody class={allGelirs.length > 0 ? 'hover:[&>tr]:preset-tonal-primary' : ''}>
 			{#if allGelirs && allGelirs.length > 0}
 				{#each allGelirs as gelir}
-					<tr class="group text-right">
+					<tr class="group !text-right">
 						<td class="text-left">
 							<button
 								onclick={() => gelirSil(gelir)}
@@ -336,7 +347,15 @@
 		<tbody class={allGiders.length > 0 ? 'hover:[&>tr]:preset-tonal-primary' : ''}>
 			{#if allGiders && allGiders.length > 0}
 				{#each allGiders as gider}
-					<tr class="!text-right">
+					<tr class="group !text-right">
+						<td class="text-left">
+							<button
+								onclick={() => giderSil(gider)}
+								class="w-2 text-center opacity-0 transition-opacity hover:text-red-500 group-hover:opacity-100"
+							>
+								<Trash size="16" />
+							</button>
+						</td>
 						<td>{gider.item}</td>
 						<td class="!text-right"
 							>{#if gider.with === 'POS'}<CreditCard color="orange" />{/if}</td
@@ -352,15 +371,15 @@
 		</tbody>
 		<tfoot>
 			<tr>
-				<td colspan="2">Nakit</td>
+				<td colspan="3">Nakit</td>
 				<td class="text-right">{toplamNakitGider()}</td>
 			</tr>
 			<tr>
-				<td colspan="2">Kredi Kartı</td>
+				<td colspan="3">Kredi Kartı</td>
 				<td class="text-right">{toplamPOSGider()}</td>
 			</tr>
 			<tr>
-				<td colspan="2">Toplam</td>
+				<td colspan="3">Toplam</td>
 				<td class="text-right">{toplamGiderHesapla()}</td>
 			</tr>
 		</tfoot>
