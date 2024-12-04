@@ -9,7 +9,7 @@
 	import items from '$lib/items';
 	import { ChevronLeft, ChevronRight, CreditCard, Minus, Plus } from 'lucide-svelte';
 	import GoToDate from '$lib/components/GoToDate.svelte';
-	import { dateToSlug, nextDay, previousDay } from '$lib/utils/dateFormat';
+	import { dateToSlug, nextDay, openDate, previousDay } from '$lib/utils/dateFormat';
 	import { formatter } from '$lib/utils/currencyFormat';
 
 	let { data } = $props();
@@ -118,9 +118,12 @@
 	};
 </script>
 
-<h1 class="text-center">{dateToSlug(data.date)}</h1>
+<div class="text-center">
+	<h1 class="text-xs">{dateToSlug(data.date)}</h1>
+	<h2 class="text-success-400">{openDate(data.date)}</h2>
+</div>
 
-<div class="flex justify-between gap-4">
+<div class="flex justify-between gap-4 text-sm">
 	<a href={'/' + previousDay(data.date)} data-sveltekit-reload type="button" class="btn">
 		<ChevronLeft />
 		<span>Önceki gün</span>
@@ -312,4 +315,8 @@
 <!--<pre>{JSON.stringify(allGelirs, null, 2)}</pre>-->
 <!--<pre>{JSON.stringify(allGiders, null, 2)}</pre>-->
 
-<GoToDate />
+<!--<GoToDate />-->
+
+<div class="text-center text-sm text-success-400">
+	<a href="/">Anasayfaya dön</a>
+</div>

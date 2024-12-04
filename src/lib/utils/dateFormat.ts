@@ -17,3 +17,7 @@ export const parseDate = (dateString: string): Date => {
 	// 'dd.MM.yyyy' formatına uygun olarak tarihi parse ediyoruz.
 	return parse(dateString, 'dd.MM.yyyy', new Date());
 };
+
+export const openDate = (date: Date) => {
+	return format(date, 'd MMMM yyyy EEEE', { locale: tr });
+};
