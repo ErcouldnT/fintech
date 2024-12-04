@@ -5,7 +5,7 @@ import type { InsertIncome } from '$lib/server/db/schema';
 export async function POST({ request }) {
 	const income: InsertIncome = await request.json();
 
-	console.log(income.price);
+	income.price = income.price.replaceAll(',', '.');
 
 	// console.log(income);
 	await createIncome(income);

@@ -5,6 +5,8 @@ import type { InsertOutgoing } from '$lib/server/db/schema';
 export async function POST({ request }) {
 	const outgoing: InsertOutgoing = await request.json();
 
+	outgoing.price = outgoing.price.replaceAll(',', '.');
+
 	// console.log(outgoing);
 	await createOutgoing(outgoing);
 
