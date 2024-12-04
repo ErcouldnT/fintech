@@ -10,4 +10,3 @@
 - Combo box ı baştan kodla kaydırma yok
 - Anasayfa aylık toplam giderlerin özeti butonu
 - Tema değiştir butonu
-- Salça yumurta bardaklar
