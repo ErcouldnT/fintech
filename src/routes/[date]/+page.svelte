@@ -33,10 +33,6 @@
 	const gelirEkle = async () => {
 		if (gelirMiktar < 1) return;
 
-		if (selectedGelirTipi === 'POS') {
-			gelirMiktar = Number(((gelirMiktar * (100 - faiz)) / 100).toFixed(2));
-		}
-
 		const gelir: InsertIncome = {
 			with: selectedGelirTipi,
 			price: String(gelirMiktar),

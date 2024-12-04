@@ -8,6 +8,11 @@ export async function POST({ request }) {
 
 	income.price = income.price.replaceAll(',', '.');
 
+	if (income.with === 'POS') {
+		const faiz = 1.49;
+		income.price = ((Number(income.price) * (100 - faiz)) / 100).toFixed(2);
+	}
+
 	await createIncome(income);
 
 	return json({ success: true });
