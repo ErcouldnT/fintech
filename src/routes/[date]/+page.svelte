@@ -187,8 +187,10 @@
 			{#if allGelirs && allGelirs.length > 0}
 				{#each allGelirs as gelir}
 					<tr class="!text-right">
-						<td class={gelir.with === 'POS' ? 'text-[orange]' : ''}> {gelir.with}</td>
-						<td>{formatter(Number(gelir.price))}</td>
+						<td
+							class={`${gelir.with === 'POS' ? 'text-[orange]' : ''} ${gelir.with === 'Getir' ? 'text-[#5a3bb6]' : ''} ${gelir.with === 'Trendyol' ? 'text-[#fb641f]' : ''} ${gelir.with === 'Yemeksepeti' ? 'text-[#e03052]' : ''}`}
+							>{gelir.with}</td
+						> <td>{formatter(Number(gelir.price))}</td>
 					</tr>
 				{/each}
 			{:else}
@@ -264,7 +266,7 @@
 					name="radio-direct"
 					value="Getir"
 				/>
-				<p>Getir</p>
+				<p class="text-[#5a3bb6]">Getir</p>
 			</label>
 
 			<label class="flex items-center space-x-2">
@@ -275,7 +277,7 @@
 					name="radio-direct"
 					value="Trendyol"
 				/>
-				<p>Trendyol</p>
+				<p class="text-[#fb641f]">Trendyol</p>
 			</label>
 
 			<label class="flex items-center space-x-2">
@@ -286,7 +288,7 @@
 					name="radio-direct"
 					value="Yemeksepeti"
 				/>
-				<p>Yemeksepeti</p>
+				<p class="text-[#e03052]">Yemeksepeti</p>
 			</label>
 
 			<p class="text-right text-sm">Kart faiz %{faiz}</p>
