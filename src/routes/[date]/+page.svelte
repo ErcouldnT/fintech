@@ -7,7 +7,8 @@
 		SelectOutgoing
 	} from '$lib/server/db/schema';
 	import items from '$lib/items';
-	import { CreditCard, Minus, Plus, Banknote } from 'lucide-svelte';
+	import { ChevronLeft, ChevronRight, CreditCard, Minus, Plus } from 'lucide-svelte';
+	import GoToDate from '$lib/components/GoToDate.svelte';
 
 	let { data } = $props();
 
@@ -116,6 +117,18 @@
 </script>
 
 <h1 class="text-center">{new Date(data.date).toDateString()}</h1>
+
+<div class="flex justify-between gap-4">
+	<button type="button" class="btn preset-filled-success-500">
+		<ChevronLeft />
+		<span>Önceki gün</span>
+	</button>
+
+	<button type="button" class="btn preset-filled-success-500">
+		<span>Sonraki gün</span>
+		<ChevronRight />
+	</button>
+</div>
 
 <div class="table-wrap pb-4">
 	<table class="table caption-top">
@@ -294,3 +307,5 @@
 
 <!--<pre>{JSON.stringify(allGelirs, null, 2)}</pre>-->
 <!--<pre>{JSON.stringify(allGiders, null, 2)}</pre>-->
+
+<GoToDate />

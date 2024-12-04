@@ -5,6 +5,7 @@ export async function load({ params }) {
 	const incomes = await getIncomesByDate(date);
 	const outgoings = await getOutgoingsByDate(date);
 
+	// TODO: Promise olarak gönder, frontend'te await kullan.
 	return {
 		date,
 		incomes,
