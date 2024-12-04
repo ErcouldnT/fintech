@@ -8,3 +8,4 @@
 - Anasayfa aylık toplam giderlerin özeti butonu
 - Tema değiştir butonu
 - Loading spinner async await
+- Excel çıktısı ver
