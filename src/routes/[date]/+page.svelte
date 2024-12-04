@@ -180,6 +180,8 @@
 	<h2 class="text-success-400">{openDate(data.date)}</h2>
 </div>
 
+<hr class="hr border-t-2" />
+
 <div class="flex justify-between gap-4 text-sm">
 	<a href={'/' + previousDay(data.date)} data-sveltekit-reload type="button" class="btn">
 		<ChevronLeft />
@@ -452,3 +454,5 @@
 <div class="text-center text-sm text-success-400">
 	<a href="/">Anasayfaya dön</a>
 </div>
+
+<hr class="hr border-t-2" />
