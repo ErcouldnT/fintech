@@ -109,10 +109,50 @@
 		return formatter(toplam);
 	};
 
+	const toplamNakitGelir = () => {
+		let toplam = 0;
+		for (const gelir of allGelirs) {
+			if (gelir.with === 'CASH') {
+				toplam = toplam + Number(gelir.price);
+			}
+		}
+		return formatter(toplam);
+	};
+
+	const toplamPOSGelir = () => {
+		let toplam = 0;
+		for (const gelir of allGelirs) {
+			if (gelir.with === 'CARD') {
+				toplam = toplam + Number(gelir.price);
+			}
+		}
+		return formatter(toplam);
+	};
+
 	const toplamGiderHesapla = () => {
 		let toplam = 0;
 		for (const gider of allGiders) {
 			toplam = toplam + Number(gider.price);
+		}
+		return formatter(toplam);
+	};
+
+	const toplamNakitGider = () => {
+		let toplam = 0;
+		for (const gider of allGiders) {
+			if (gider.with === 'CASH') {
+				toplam = toplam + Number(gider.price);
+			}
+		}
+		return formatter(toplam);
+	};
+
+	const toplamPOSGider = () => {
+		let toplam = 0;
+		for (const gider of allGiders) {
+			if (gider.with === 'CARD') {
+				toplam = toplam + Number(gider.price);
+			}
 		}
 		return formatter(toplam);
 	};
@@ -161,6 +201,14 @@
 			{/if}
 		</tbody>
 		<tfoot>
+			<tr>
+				<td colspan="1">Nakit</td>
+				<td class="text-right">{toplamNakitGelir()}</td>
+			</tr>
+			<tr>
+				<td colspan="1">POS</td>
+				<td class="text-right">{toplamPOSGelir()}</td>
+			</tr>
 			<tr>
 				<td colspan="1">Toplam</td>
 				<td class="text-right">{toplamGelirHesapla()}</td>
@@ -248,6 +296,14 @@
 			{/if}
 		</tbody>
 		<tfoot>
+			<tr>
+				<td colspan="2">Nakit</td>
+				<td class="text-right">{toplamNakitGider()}</td>
+			</tr>
+			<tr>
+				<td colspan="2">Kredi Kartı</td>
+				<td class="text-right">{toplamPOSGider()}</td>
+			</tr>
 			<tr>
 				<td colspan="2">Toplam</td>
 				<td class="text-right">{toplamGiderHesapla()}</td>

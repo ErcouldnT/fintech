@@ -3,7 +3,6 @@
 - Girdi değiştir sil
 - Auth Sv add Lucia demo sayfasını çevir kullan
 - Error page
-- Kk toplam nakit toplam
 - Trendyol yemek
   Yemek sepeti
   Getir yemek
