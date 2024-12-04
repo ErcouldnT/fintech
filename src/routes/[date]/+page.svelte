@@ -10,6 +10,7 @@
 	import { ChevronLeft, ChevronRight, CreditCard, Minus, Plus } from 'lucide-svelte';
 	import GoToDate from '$lib/components/GoToDate.svelte';
 	import { dateToSlug, nextDay, previousDay } from '$lib/utils/dateFormat';
+	import { formatter } from '$lib/utils/currencyFormat';
 
 	let { data } = $props();
 
@@ -105,7 +106,7 @@
 		for (const gelir of allGelirs) {
 			toplam = toplam + Number(gelir.price);
 		}
-		return toplam.toFixed(2);
+		return formatter(toplam);
 	};
 
 	const toplamGiderHesapla = () => {
@@ -113,7 +114,7 @@
 		for (const gider of allGiders) {
 			toplam = toplam + Number(gider.price);
 		}
-		return toplam.toFixed(2);
+		return formatter(toplam);
 	};
 </script>
 
@@ -155,7 +156,7 @@
 				{#each allGelirs as gelir}
 					<tr class="!text-right">
 						<td> {gelir.with === 'CARD' ? 'POS' : 'Nakit'}</td>
-						<td>{Number(gelir.price).toFixed(2)} ₺</td>
+						<td>{formatter(Number(gelir.price))}</td>
 					</tr>
 				{/each}
 			{:else}
@@ -167,7 +168,7 @@
 		<tfoot>
 			<tr>
 				<td colspan="1">Toplam</td>
-				<td class="text-right">{toplamGelirHesapla()} ₺</td>
+				<td class="text-right">{toplamGelirHesapla()}</td>
 			</tr>
 		</tfoot>
 	</table>
@@ -242,7 +243,7 @@
 						<td class="!text-right"
 							>{#if gider.with === 'CARD'}<CreditCard color="orange" />{/if}</td
 						>
-						<td>{Number(gider.price).toFixed(2)} ₺</td>
+						<td>{formatter(Number(gider.price))}</td>
 					</tr>
 				{/each}
 			{:else}
@@ -254,7 +255,7 @@
 		<tfoot>
 			<tr>
 				<td colspan="2">Toplam</td>
-				<td class="text-right">{toplamGiderHesapla()} ₺</td>
+				<td class="text-right">{toplamGiderHesapla()}</td>
 			</tr>
 		</tfoot>
 	</table>

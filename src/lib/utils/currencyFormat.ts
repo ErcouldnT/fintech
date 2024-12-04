@@ -4,5 +4,5 @@ export const formatter = (currency: number) => {
 		currency: 'TRY'
 	});
 
-	return formatter.format(currency); // 123.456,78 TL
+	return formatter.format(currency).slice(1) + ' ₺'; // ₺1.000.985,10
 };
