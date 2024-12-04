@@ -198,6 +198,7 @@
 		<thead>
 			<tr>
 				<th class="!text-right"></th>
+				<th class="!text-right"></th>
 				<th class="!text-right">Fiyat</th>
 			</tr>
 		</thead>
@@ -339,6 +340,7 @@
 		<caption class="pt-4">Gider durumu</caption>
 		<thead>
 			<tr>
+				<th class="!text-right"></th>
 				<th class="!text-right"></th>
 				<th class="!text-right"></th>
 				<th class="!text-right">Fiyat</th>
