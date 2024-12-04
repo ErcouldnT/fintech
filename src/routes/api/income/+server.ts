@@ -5,6 +5,8 @@ import type { InsertIncome } from '$lib/server/db/schema';
 export async function POST({ request }) {
 	const income: InsertIncome = await request.json();
 
+	console.log(income.price);
+
 	// console.log(income);
 	await createIncome(income);
 

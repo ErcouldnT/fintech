@@ -1,7 +1,7 @@
 import { pgTable, pgEnum, text, numeric, serial, timestamp } from 'drizzle-orm/pg-core';
 import { shoppingList } from '../../items';
 
-export const withEnum = pgEnum('with', ['CASH', 'CARD']);
+export const withEnum = pgEnum('with', ['Nakit', 'POS', 'Getir', 'Trendyol', 'Yemeksepeti']);
 export const itemEnum = pgEnum('item', shoppingList);
 
 export const incomesTable = pgTable('incomes', {

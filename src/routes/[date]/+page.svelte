@@ -8,7 +8,6 @@
 	} from '$lib/server/db/schema';
 	import items from '$lib/items';
 	import { ChevronLeft, ChevronRight, CreditCard, Minus, Plus } from 'lucide-svelte';
-	import GoToDate from '$lib/components/GoToDate.svelte';
 	import { dateToSlug, nextDay, openDate, previousDay } from '$lib/utils/dateFormat';
 	import { formatter } from '$lib/utils/currencyFormat';
 
@@ -22,19 +21,19 @@
 	const faiz = 1.49;
 	let gelirStateModal = $state(false);
 	let gelirMiktar = $state(0);
-	let selectedGelirTipi: 'CASH' | 'CARD' = $state('CASH');
+	let selectedGelirTipi: InsertIncome['with'] = $state('Nakit');
 	let allGelirs: SelectIncome[] = $state(data.incomes);
 
 	function gelirModalClose() {
 		gelirMiktar = 0;
-		selectedGelirTipi = 'CASH';
+		selectedGelirTipi = 'Nakit';
 		gelirStateModal = false;
 	}
 
 	const gelirEkle = async () => {
 		if (gelirMiktar < 1) return;
 
-		if (selectedGelirTipi === 'CARD') {
+		if (selectedGelirTipi === 'POS') {
 			gelirMiktar = Number(((gelirMiktar * (100 - faiz)) / 100).toFixed(2));
 		}
 
@@ -61,7 +60,7 @@
 	let giderStateModal = $state(false);
 	let selectedGiderKalemi = $state(['tost']);
 	let giderMiktar = $state(0);
-	let selectedGiderTipi: 'CASH' | 'CARD' = $state('CASH');
+	let selectedGiderTipi: InsertOutgoing['with'] = $state('Nakit');
 	let allGiders: SelectOutgoing[] = $state(data.outgoings);
 
 	interface GiderKalemi {
@@ -73,7 +72,7 @@
 
 	function giderModalClose() {
 		giderMiktar = 0;
-		selectedGiderTipi = 'CASH';
+		selectedGiderTipi = 'Nakit';
 		selectedGiderKalemi = ['tost'];
 		giderStateModal = false;
 	}
@@ -112,7 +111,7 @@
 	const toplamNakitGelir = () => {
 		let toplam = 0;
 		for (const gelir of allGelirs) {
-			if (gelir.with === 'CASH') {
+			if (gelir.with === 'Nakit') {
 				toplam = toplam + Number(gelir.price);
 			}
 		}
@@ -122,7 +121,7 @@
 	const toplamPOSGelir = () => {
 		let toplam = 0;
 		for (const gelir of allGelirs) {
-			if (gelir.with === 'CARD') {
+			if (gelir.with === 'POS') {
 				toplam = toplam + Number(gelir.price);
 			}
 		}
@@ -140,7 +139,7 @@
 	const toplamNakitGider = () => {
 		let toplam = 0;
 		for (const gider of allGiders) {
-			if (gider.with === 'CASH') {
+			if (gider.with === 'Nakit') {
 				toplam = toplam + Number(gider.price);
 			}
 		}
@@ -150,7 +149,7 @@
 	const toplamPOSGider = () => {
 		let toplam = 0;
 		for (const gider of allGiders) {
-			if (gider.with === 'CARD') {
+			if (gider.with === 'POS') {
 				toplam = toplam + Number(gider.price);
 			}
 		}
@@ -188,9 +187,7 @@
 			{#if allGelirs && allGelirs.length > 0}
 				{#each allGelirs as gelir}
 					<tr class="!text-right">
-						<td class={gelir.with === 'CARD' ? 'text-[orange]' : ''}>
-							{gelir.with === 'CARD' ? 'POS' : 'Nakit'}</td
-						>
+						<td class={gelir.with === 'POS' ? 'text-[orange]' : ''}> {gelir.with}</td>
 						<td>{formatter(Number(gelir.price))}</td>
 					</tr>
 				{/each}
@@ -243,7 +240,7 @@
 					type="radio"
 					checked
 					name="radio-direct"
-					value="CASH"
+					value="Nakit"
 				/>
 				<p>Nakit</p>
 			</label>
@@ -254,9 +251,42 @@
 					class="radio"
 					type="radio"
 					name="radio-direct"
-					value="CARD"
+					value="POS"
 				/>
 				<p>Kredi kartı</p>
+			</label>
+
+			<label class="flex items-center space-x-2">
+				<input
+					bind:group={selectedGelirTipi}
+					class="radio"
+					type="radio"
+					name="radio-direct"
+					value="Getir"
+				/>
+				<p>Getir</p>
+			</label>
+
+			<label class="flex items-center space-x-2">
+				<input
+					bind:group={selectedGelirTipi}
+					class="radio"
+					type="radio"
+					name="radio-direct"
+					value="Trendyol"
+				/>
+				<p>Trendyol</p>
+			</label>
+
+			<label class="flex items-center space-x-2">
+				<input
+					bind:group={selectedGelirTipi}
+					class="radio"
+					type="radio"
+					name="radio-direct"
+					value="Yemeksepeti"
+				/>
+				<p>Yemeksepeti</p>
 			</label>
 
 			<p class="text-right text-sm">Kart faiz %{faiz}</p>
@@ -284,7 +314,7 @@
 					<tr class="!text-right">
 						<td>{gider.item}</td>
 						<td class="!text-right"
-							>{#if gider.with === 'CARD'}<CreditCard color="orange" />{/if}</td
+							>{#if gider.with === 'POS'}<CreditCard color="orange" />{/if}</td
 						>
 						<td>{formatter(Number(gider.price))}</td>
 					</tr>
@@ -345,7 +375,7 @@
 						type="radio"
 						checked
 						name="radio-direct"
-						value="CASH"
+						value="Nakit"
 					/>
 					<p>Nakit</p>
 				</label>
@@ -355,7 +385,7 @@
 						class="radio"
 						type="radio"
 						name="radio-direct"
-						value="CARD"
+						value="POS"
 					/>
 					<p>Kredi kartı</p>
 				</label>

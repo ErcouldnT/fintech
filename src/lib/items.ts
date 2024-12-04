@@ -21,9 +21,6 @@ export const shoppingList: [string, ...string[]] = [
 	'Ekmek',
 	'Çikolata',
 	'Kek',
-	'Salça',
-	'Yumurta',
-	'Bardaklar',
 	'Siyah çay',
 	'Bitki çayları',
 	'Ada çayı',
@@ -75,7 +72,10 @@ export const shoppingList: [string, ...string[]] = [
 	'Servis peçetesi',
 	'Servis kağıdı',
 	'Motor yakıtı',
-	'Diğer harcamalar'
+	'Diğer harcamalar',
+	'Salça',
+	'Yumurta',
+	'Bardaklar'
 ];
 
 const items: { label: string; value: string }[] = [];
