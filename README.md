@@ -1,6 +1,6 @@
 # Todo
 
-- Girdi değiştir sil
+- Girdi değiştir sil popup
 - Auth Sv add Lucia demo sayfasını çevir kullan
 - Error page
 - Trendyol yemek

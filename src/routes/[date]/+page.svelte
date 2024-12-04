@@ -184,7 +184,7 @@
 				<th class="!text-right">Fiyat</th>
 			</tr>
 		</thead>
-		<tbody class="hover:[&>tr]:preset-tonal-primary">
+		<tbody class={allGelirs.length > 0 ? 'hover:[&>tr]:preset-tonal-primary' : ''}>
 			{#if allGelirs && allGelirs.length > 0}
 				{#each allGelirs as gelir}
 					<tr class="!text-right">
@@ -278,7 +278,7 @@
 				<th class="!text-right">Fiyat</th>
 			</tr>
 		</thead>
-		<tbody class="hover:[&>tr]:preset-tonal-primary">
+		<tbody class={allGiders.length > 0 ? 'hover:[&>tr]:preset-tonal-primary' : ''}>
 			{#if allGiders && allGiders.length > 0}
 				{#each allGiders as gider}
 					<tr class="!text-right">
