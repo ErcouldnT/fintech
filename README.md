@@ -9,3 +9,4 @@
 - Loading spinner async await
 - Excel çıktısı ver
 - Girdi silerken confirmation modal göster
+- Çıkış yap butonu koy

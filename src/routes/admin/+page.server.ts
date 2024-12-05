@@ -6,8 +6,8 @@ export const load = async ({ request }) => {
 		headers: request.headers
 	});
 
-	if (!session) {
-		throw redirect(307, '/admin');
+	if (session) {
+		throw redirect(307, '/');
 	}
 
 	return { session };
