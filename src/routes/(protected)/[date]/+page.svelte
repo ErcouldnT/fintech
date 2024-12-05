@@ -452,7 +452,7 @@
 <!--<GoToDate />-->
 
 <div class="text-center text-sm text-success-400">
-	<a href="/static">Anasayfaya dön</a>
+	<a href="/">Anasayfaya dön</a>
 </div>
 
 <hr class="hr border-t-2" />

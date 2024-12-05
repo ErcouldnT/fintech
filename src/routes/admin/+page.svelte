@@ -7,7 +7,7 @@
 	let password = $state('');
 	// let name = $state('');
 
-	const handleSignIn = async (e) => {
+	const handleSignIn = async (e: Event) => {
 		e.preventDefault();
 
 		const { data, error } = await authClient.signIn.email({

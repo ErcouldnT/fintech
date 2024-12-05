@@ -7,11 +7,11 @@
 
 <h1 class="text-center text-amber-500">Onur Muhasebe</h1>
 
-<GoToDate />
-
-<div class="text-center">
+<div>
 	{#if $session.data}
-		<div class="space-y-1">
+		<GoToDate />
+
+		<div class="space-y-1 text-center">
 			<p class="text-success-500">
 				{$session?.data?.user.name}
 			</p>
@@ -25,6 +25,8 @@
 			</button>
 		</div>
 	{:else}
-		<a href="/admin" class="btn preset-tonal">Giriş yap</a>
+		<div class="text-center">
+			<a data-sveltekit-reload href="/admin" class="btn preset-tonal">Giriş yap</a>
+		</div>
 	{/if}
 </div>
