@@ -1,6 +1,5 @@
 # Todo
 
-- Auth Sv add Lucia demo sayfasını çevir kullan
 - Error page
 - Girdilere not kısmı opsiyonel
 - Girdi değiştir
@@ -8,3 +7,6 @@
 - Anasayfa aylık toplam giderlerin özeti butonu
 - Tema değiştir butonu
 - Loading spinner async await
+- Excel çıktısı ver
+- Girdi silerken confirmation modal göster
+- Çıkış yap butonu koy
