@@ -107,7 +107,7 @@
 	const toplamNakitGelir = () => {
 		let toplam = 0;
 		for (const gelir of allGelirs) {
-			if (gelir.with === 'Nakit') {
+			if (gelir.with !== 'POS') {
 				toplam = toplam + Number(gelir.price);
 			}
 		}
