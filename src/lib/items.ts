@@ -75,7 +75,17 @@ export const shoppingList: [string, ...string[]] = [
 	'Diğer harcamalar',
 	'Salça',
 	'Yumurta',
-	'Bardaklar'
+	'Bardaklar',
+	'Adisyo',
+	'Mercimek',
+	'Bulaşık deterjanı',
+	'Bulaşık makine deterjanı',
+	'Mısır unu',
+	'Avşar',
+	'Çerezler',
+	'Süt',
+	'İskambil kağıtları',
+	'Schnitzel'
 ];
 
 const items: { label: string; value: string }[] = [];
