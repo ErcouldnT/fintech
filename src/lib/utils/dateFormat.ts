@@ -21,3 +21,7 @@ export const parseDate = (dateString: string): Date => {
 export const openDate = (date: Date) => {
 	return format(date, 'd MMMM yyyy EEEE', { locale: tr });
 };
+
+export const monthAndYear = (date: Date) => {
+	return format(date, 'MMMM yyyy', { locale: tr });
+};

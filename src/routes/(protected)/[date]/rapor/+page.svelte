@@ -1,6 +1,7 @@
 <script lang="ts">
 	import MonthlyReport from '$lib/components/MonthlyReport.svelte';
 	import type { SelectIncome, SelectOutgoing } from '$lib/server/db/schema';
+	import { monthAndYear } from '$lib/utils/dateFormat';
 
 	let { data } = $props();
 
@@ -63,5 +64,7 @@
 	const incomeResults = getTotalIncomes(data.monthlyIncomes);
 	const outgoingResults = getTotalOutgoings(data.monthlyOutgoings);
 </script>
+
+<div>{monthAndYear(data.date)}</div>
 
 <MonthlyReport monthlyIncomes={incomeResults} monthlyOutgoings={outgoingResults} />
