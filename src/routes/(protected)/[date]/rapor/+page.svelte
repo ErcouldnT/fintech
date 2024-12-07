@@ -4,13 +4,23 @@
 
 	let { data } = $props();
 
-	function sortByPriceDescending(list) {
+	interface monthlyIncome {
+		with: string;
+		price: number;
+	}
+
+	interface monthlyOutgoing {
+		item: string;
+		price: number;
+	}
+
+	function sortByPriceDescending<T extends monthlyIncome | monthlyOutgoing>(list: T[]): T[] {
 		return list.sort((a, b) => b.price - a.price);
 	}
 
 	function getTotalIncomes(list: SelectIncome[]) {
 		const result = [];
-		const grouped: { [key: string]: { with: string; price: number } } = {};
+		const grouped: { [key: string]: monthlyIncome } = {};
 
 		// "with" parametresine göre gruplama ve fiyatları toplama
 		list.forEach((income) => {
@@ -31,7 +41,7 @@
 
 	function getTotalOutgoings(list: SelectOutgoing[]) {
 		const result = [];
-		const grouped: { [key: string]: { item: string; price: number } } = {};
+		const grouped: { [key: string]: monthlyOutgoing } = {};
 
 		// "with" parametresine göre gruplama ve fiyatları toplama
 		list.forEach((outgoing) => {

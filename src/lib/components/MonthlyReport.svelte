@@ -1,12 +1,21 @@
 <script lang="ts">
-	import type { SelectIncome, SelectOutgoing } from '$lib/server/db/schema';
 	import { formatter } from '$lib/utils/currencyFormat';
 
-	export let monthlyIncomes: SelectIncome[];
-	export let monthlyOutgoings: SelectOutgoing[] = [];
+	export let monthlyIncomes: monthlyIncome[];
+	export let monthlyOutgoings: monthlyOutgoing[] = [];
 
-	function getTotalPrice(data) {
-		return data.reduce((total, item) => total + item.price, 0);
+	interface monthlyIncome {
+		with: string;
+		price: number;
+	}
+
+	interface monthlyOutgoing {
+		item: string;
+		price: number;
+	}
+
+	function getTotalPrice(list: monthlyIncome[] | monthlyOutgoing[]) {
+		return list.reduce((total, item) => total + item.price, 0);
 	}
 </script>
 
