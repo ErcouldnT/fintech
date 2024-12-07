@@ -1,4 +1,4 @@
-import { getIncomesByDate, getOutgoingsByDate } from '$lib/server/db/queries/select';
+import { getIncomesByMonth, getOutgoingsByMonth } from '$lib/server/db/queries/select';
 import { parseDate, dateToSlug } from '$lib/utils/dateFormat';
 import { error } from '@sveltejs/kit';
 
@@ -11,12 +11,12 @@ export async function load({ params }) {
 	}
 
 	// TODO: Bunları Promise olarak gönder ön tarafa. Daha hızlı olacak.
-	const incomes = await getIncomesByDate(dateToSlug(date));
-	const outgoings = await getOutgoingsByDate(dateToSlug(date));
+	const monthlyIncomes = await getIncomesByMonth(dateToSlug(date));
+	const monthlyOutgoings = await getOutgoingsByMonth(dateToSlug(date));
 
 	return {
 		date,
-		incomes,
-		outgoings
+		monthlyIncomes,
+		monthlyOutgoings
 	};
 }

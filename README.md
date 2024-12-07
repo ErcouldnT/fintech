@@ -9,4 +9,5 @@
 - Loading spinner async await
 - Excel çıktısı ver
 - Girdi silerken confirmation modal göster
-- Çıkış yap butonu koy
+- Çıkış yap butonu koy (layout)
+- Aylık ve günlük kar-zarar durumunu göster
