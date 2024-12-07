@@ -2,23 +2,26 @@
 	import { authClient } from '$lib/auth-client';
 	import GoToDate from '$lib/components/GoToDate.svelte';
 
-	const session = authClient.useSession();
+	// const session = authClient.useSession();
+
+	let { data } = $props();
 </script>
 
 <h1 class="text-center text-amber-500">Onur Muhasebe</h1>
 
 <div>
-	{#if $session.data}
+	{#if data.session}
 		<GoToDate />
 
 		<div class="space-y-1 text-center">
 			<p class="text-success-500">
-				{$session?.data?.user.name}
+				{data.session.user.name}
 			</p>
 			<button
 				class="btn preset-tonal"
-				on:click={async () => {
+				onclick={async () => {
 					await authClient.signOut();
+					window.location.href = '/';
 				}}
 			>
 				Çıkış yap
