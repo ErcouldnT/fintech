@@ -44,7 +44,7 @@
 		const result = [];
 		const grouped: { [key: string]: monthlyOutgoing } = {};
 
-		// "with" parametresine göre gruplama ve fiyatları toplama
+		// "item" parametresine göre gruplama ve fiyatları toplama
 		list.forEach((outgoing) => {
 			if (grouped[outgoing.item]) {
 				grouped[outgoing.item].price += parseFloat(outgoing.price);
@@ -65,6 +65,6 @@
 	const outgoingResults = getTotalOutgoings(data.monthlyOutgoings);
 </script>
 
-<div>{monthAndYear(data.date)}</div>
+<div class="text-center text-success-500">{monthAndYear(data.date)}</div>
 
 <MonthlyReport monthlyIncomes={incomeResults} monthlyOutgoings={outgoingResults} />
