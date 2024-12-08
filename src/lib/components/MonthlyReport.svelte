@@ -1,22 +1,9 @@
 <script lang="ts">
 	import { formatter } from '$lib/utils/currencyFormat';
+	import { getTotalPrice, type monthlyIncome, type monthlyOutgoing } from '$lib/calculations';
 
 	export let monthlyIncomes: monthlyIncome[];
 	export let monthlyOutgoings: monthlyOutgoing[] = [];
-
-	interface monthlyIncome {
-		with: string;
-		price: number;
-	}
-
-	interface monthlyOutgoing {
-		item: string;
-		price: number;
-	}
-
-	function getTotalPrice(list: monthlyIncome[] | monthlyOutgoing[]) {
-		return list.reduce((total, item) => total + item.price, 0);
-	}
 </script>
 
 <div class="table-wrap pb-4">

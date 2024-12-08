@@ -452,7 +452,7 @@
 <!--<GoToDate />-->
 
 <div class="text-center text-sm text-success-400">
-	<a data-sveltekit-reload href="{dateToSlug(data.date)}/rapor">Aylık toplam göster</a>
+	<a data-sveltekit-reload href="{dateToSlug(data.date)}/rapor">Aylık Toplam Göster</a>
 </div>
 
 <hr class="hr border-t-2" />
