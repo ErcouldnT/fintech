@@ -4,7 +4,55 @@
 
 	export let monthlyIncomes: monthlyIncome[];
 	export let monthlyOutgoings: monthlyOutgoing[] = [];
+
+	const totalIncome = getTotalPrice(monthlyIncomes);
+	const totalOutgoing = getTotalPrice(monthlyOutgoings);
+
+	const profitLoss: number = totalIncome - totalOutgoing;
+	const profitLossPercentage: number = totalIncome > 0 ? (profitLoss / totalIncome) * 100 : 0;
 </script>
+
+<!-- Profit/Loss Display -->
+
+<div class="table-wrap pb-4">
+	<table class="table caption-top">
+		<caption class="pt-4">Aylık Kâr Durumu</caption>
+		<thead>
+			<tr>
+				<th class="!text-right"></th>
+				<th class="!text-right">Değer</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="!text-right">
+				<td>Gelir</td>
+				<td>{formatter(totalIncome)}</td>
+			</tr>
+			<tr class="!text-right">
+				<td>Gider</td>
+				<td>{formatter(totalOutgoing)}</td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td>Fark</td>
+				<td class="text-right"
+					>{profitLoss >= 0 ? '' + formatter(profitLoss) : '-' + formatter(profitLoss).slice(1)}</td
+				>
+			</tr>
+			<tr>
+				<td>Yüzde</td>
+				<td class={`${profitLoss >= 0 ? 'text-success-500' : 'text-error-500'} text-right`}>
+					{profitLoss >= 0
+						? `%${profitLossPercentage.toFixed(2).replace('.', ',')} kâr`
+						: `%${Math.abs(profitLossPercentage).toFixed(2).replace('.', ',')} zarar`}
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
+
+<!-- Total Incomes -->
 
 <div class="table-wrap pb-4">
 	<table class="table caption-top">
@@ -44,13 +92,13 @@
 		<tfoot>
 			<tr>
 				<td class="text-left">Toplam</td>
-				<td class="text-right">{formatter(getTotalPrice(monthlyIncomes))}</td>
+				<td class="text-right">{formatter(totalIncome)}</td>
 			</tr>
 		</tfoot>
 	</table>
 </div>
 
-<!--<hr class="hr border-t-2" />-->
+<!-- Total Outgoings -->
 
 <div class="table-wrap pb-4">
 	<table class="table caption-top">
@@ -78,7 +126,7 @@
 		<tfoot>
 			<tr>
 				<td class="text-left">Toplam</td>
-				<td class="text-right">{formatter(getTotalPrice(monthlyOutgoings))}</td>
+				<td class="text-right">{formatter(totalOutgoing)}</td>
 			</tr>
 		</tfoot>
 	</table>
