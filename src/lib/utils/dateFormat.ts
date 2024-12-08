@@ -1,4 +1,4 @@
-import { format, parse, addDays, subDays } from 'date-fns';
+import { format, parse, addDays, subDays, addMonths, subMonths } from 'date-fns';
 import { tr } from 'date-fns/locale';
 
 export const dateToSlug = (date: Date) => {
@@ -9,8 +9,16 @@ export const nextDay = (date: Date) => {
 	return dateToSlug(addDays(date, 1));
 };
 
+export const nextMonth = (date: Date) => {
+	return dateToSlug(addMonths(date, 1));
+};
+
 export const previousDay = (date: Date) => {
 	return dateToSlug(subDays(date, 1));
+};
+
+export const previousMonth = (date: Date) => {
+	return dateToSlug(subMonths(date, 1));
 };
 
 export const parseDate = (dateString: string): Date => {
