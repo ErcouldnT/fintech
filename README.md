@@ -7,7 +7,6 @@
 - Tema değiştir butonu
 - Loading spinner async await
 - Excel çıktısı ver
-- Girdi silerken confirmation modal göster
 - Çıkış yap butonu koy (layout)
-- Aylık ve günlük kar-zarar durumunu göster
+- Günlük kar-zarar durumunu göster
 - Önceki güne, aya göre kar-zarar durumu
