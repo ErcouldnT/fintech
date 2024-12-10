@@ -288,7 +288,13 @@
 
 		<label class="label">
 			<span class="label-text">Fiyat</span>
-			<input bind:value={gelirMiktar} class="input" type="text" placeholder="0" />
+			<input
+				bind:value={gelirMiktar}
+				class="input"
+				type="text"
+				placeholder="0"
+				onkeydown={(e) => e.key === 'Enter' && gelirEkle()}
+			/>
 		</label>
 
 		<div class="space-y-1">
@@ -432,7 +438,13 @@
 
 			<label class="label">
 				<span class="label-text">Fiyat</span>
-				<input bind:value={giderMiktar} class="input" type="text" placeholder="0" />
+				<input
+					bind:value={giderMiktar}
+					class="input"
+					type="text"
+					placeholder="0"
+					onkeydown={(e) => e.key === 'Enter' && giderEkle()}
+				/>
 			</label>
 
 			<div class="space-y-1">
@@ -467,22 +479,29 @@
 </Modal>
 
 <!-- Confirmation Modal -->
-<Modal
-	bind:open={confirmModalOpen}
-	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
-	backdropClasses="backdrop-blur-sm"
->
+<Modal bind:open={confirmModalOpen} backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
-		<header>
-			<h2 class="h2">Onayla</h2>
-		</header>
-		<p>Bu öğeyi silmek istediğinize emin misiniz?</p>
-		<footer class="flex justify-end gap-4">
-			<button type="button" class="btn preset-tonal" onclick={() => (confirmModalOpen = false)}>
-				İptal
-			</button>
-			<button type="button" class="btn preset-filled" onclick={confirmDelete}>Evet</button>
-		</footer>
+		<div
+			class="card max-w-screen-sm space-y-4 p-4 shadow-xl bg-surface-100-900"
+			role="dialog"
+			aria-labelledby="modal-header"
+			onkeydown={(event) => {
+				if (event.key === 'Enter') {
+					confirmDelete();
+				}
+			}}
+		>
+			<header>
+				<h2 class="h2">Onayla</h2>
+			</header>
+			<p>Bu öğeyi silmek istediğinize emin misiniz?</p>
+			<footer class="flex justify-end gap-4">
+				<button type="button" class="btn preset-tonal" onclick={() => (confirmModalOpen = false)}>
+					İptal
+				</button>
+				<button type="button" class="btn preset-filled" onclick={confirmDelete}>Evet</button>
+			</footer>
+		</div>
 	{/snippet}
 </Modal>
 
