@@ -7,7 +7,7 @@
 		SelectOutgoing
 	} from '$lib/server/db/schema';
 	import items from '$lib/items';
-	import { ChevronLeft, ChevronRight, CreditCard, Minus, Plus, Trash } from 'lucide-svelte';
+	import { ChevronLeft, ChevronRight, CreditCard, Minus, Plus, NotebookPen } from 'lucide-svelte';
 	import { dateToSlug, nextDay, openDate, previousDay } from '$lib/utils/dateFormat';
 	import { formatter } from '$lib/utils/currencyFormat';
 
@@ -173,6 +173,26 @@
 		});
 		reloadPage();
 	};
+
+	let selectedItemToDelete: SelectIncome | SelectOutgoing | null = null;
+	let deleteAction: (item: SelectIncome | SelectOutgoing) => Promise<void> = async () => {};
+	let confirmModalOpen = $state(false);
+
+	const openConfirmModal = (
+		item: SelectIncome | SelectOutgoing,
+		action: (item: SelectIncome | SelectOutgoing) => Promise<void>
+	): void => {
+		selectedItemToDelete = item;
+		deleteAction = action;
+		confirmModalOpen = true;
+	};
+
+	const confirmDelete = async (): Promise<void> => {
+		if (selectedItemToDelete) {
+			await deleteAction(selectedItemToDelete);
+			confirmModalOpen = false;
+		}
+	};
 </script>
 
 <div class="text-center">
@@ -210,10 +230,10 @@
 					<tr class="group !text-right">
 						<td class="text-left">
 							<button
-								onclick={() => gelirSil(gelir)}
+								onclick={() => openConfirmModal(gelir, gelirSil)}
 								class="w-2 text-center opacity-0 transition-opacity hover:text-red-500 group-hover:opacity-100"
 							>
-								<Trash size="16" />
+								<NotebookPen size="16" />
 							</button>
 						</td>
 						<td
@@ -354,10 +374,10 @@
 					<tr class="group !text-right">
 						<td class="text-left">
 							<button
-								onclick={() => giderSil(gider)}
+								onclick={() => openConfirmModal(gider, giderSil)}
 								class="w-2 text-center opacity-0 transition-opacity hover:text-red-500 group-hover:opacity-100"
 							>
-								<Trash size="16" />
+								<NotebookPen size="16" />
 							</button>
 						</td>
 						<td>{gider.item}</td>
@@ -442,6 +462,26 @@
 		<footer class="flex justify-end gap-4">
 			<button type="button" class="btn preset-tonal" onclick={giderModalClose}>İptal</button>
 			<button type="button" class="btn preset-filled" onclick={giderEkle}>Ekle</button>
+		</footer>
+	{/snippet}
+</Modal>
+
+<!-- Confirmation Modal -->
+<Modal
+	bind:open={confirmModalOpen}
+	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
+	backdropClasses="backdrop-blur-sm"
+>
+	{#snippet content()}
+		<header>
+			<h2 class="h2">Onayla</h2>
+		</header>
+		<p>Bu öğeyi silmek istediğinize emin misiniz?</p>
+		<footer class="flex justify-end gap-4">
+			<button type="button" class="btn preset-tonal" onclick={() => (confirmModalOpen = false)}>
+				İptal
+			</button>
+			<button type="button" class="btn preset-filled" onclick={confirmDelete}>Evet</button>
 		</footer>
 	{/snippet}
 </Modal>
