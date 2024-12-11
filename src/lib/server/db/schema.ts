@@ -1,6 +1,21 @@
 import { pgTable, pgEnum, text, numeric, serial, timestamp, boolean } from 'drizzle-orm/pg-core';
 import { shoppingList } from '../../items';
 
+export const dailyFoodsTable = pgTable('dailyFoods', {
+	id: serial('id').primaryKey(),
+	price: numeric('price').notNull(),
+	foods: text('foods').array().notNull(), // foods alanı string array olacak.
+	slogan: text('slogan').notNull(),
+	note: text('note'),
+	createdAt: timestamp('created_at').notNull().defaultNow(),
+	updatedAt: timestamp('updated_at')
+		.notNull()
+		.$onUpdate(() => new Date())
+});
+
+export type InsertDailyFoods = typeof dailyFoodsTable.$inferInsert;
+export type SelectDailyFoods = typeof dailyFoodsTable.$inferSelect;
+
 export const withEnum = pgEnum('with', ['Nakit', 'POS', 'Getir', 'Trendyol', 'Yemeksepeti']);
 export const itemEnum = pgEnum('item', shoppingList);
 
