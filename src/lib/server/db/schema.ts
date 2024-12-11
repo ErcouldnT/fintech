@@ -1,4 +1,13 @@
-import { pgTable, pgEnum, text, numeric, serial, timestamp, boolean } from 'drizzle-orm/pg-core';
+import {
+	pgTable,
+	pgEnum,
+	text,
+	numeric,
+	serial,
+	timestamp,
+	boolean,
+	integer
+} from 'drizzle-orm/pg-core';
 import { shoppingList } from '../../items';
 
 export const dailyFoodsTable = pgTable('dailyFoods', {
@@ -96,4 +105,11 @@ export const verification = pgTable('verification', {
 	expiresAt: timestamp('expiresAt').notNull(),
 	createdAt: timestamp('createdAt'),
 	updatedAt: timestamp('updatedAt')
+});
+
+export const rateLimit = pgTable('rateLimit', {
+	id: text('id').primaryKey(),
+	key: text('key'),
+	count: integer('count'),
+	lastRequest: integer('lastRequest')
 });

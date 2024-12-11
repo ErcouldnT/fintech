@@ -10,3 +10,4 @@
 - Çıkış yap butonu koy (layout)
 - Günlük kar-zarar durumunu göster
 - Önceki güne, aya göre kar-zarar durumu
+- Login için yönlendirirken önceki url'yi hatırla
