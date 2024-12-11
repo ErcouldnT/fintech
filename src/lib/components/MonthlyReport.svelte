@@ -2,7 +2,7 @@
 	import { formatter } from '$lib/utils/currencyFormat';
 	import { getTotalPrice, type monthlyIncome, type monthlyOutgoing } from '$lib/calculations';
 
-	export let monthlyIncomes: monthlyIncome[];
+	export let monthlyIncomes: monthlyIncome[] = [];
 	export let monthlyOutgoings: monthlyOutgoing[] = [];
 	export let totalDayCountOfIncomes: number = 0;
 	export let totalDayCountOfOutgoings: number = 0;
