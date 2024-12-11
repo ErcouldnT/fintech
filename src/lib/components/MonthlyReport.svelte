@@ -4,12 +4,17 @@
 
 	export let monthlyIncomes: monthlyIncome[];
 	export let monthlyOutgoings: monthlyOutgoing[] = [];
+	export let totalDayCountOfIncomes: number = 0;
+	export let totalDayCountOfOutgoings: number = 0;
 
 	const totalIncome = getTotalPrice(monthlyIncomes);
 	const totalOutgoing = getTotalPrice(monthlyOutgoings);
 
 	const profitLoss: number = totalIncome - totalOutgoing;
 	const profitLossPercentage: number = totalIncome > 0 ? (profitLoss / totalIncome) * 100 : 0;
+
+	const DailyAverageDifference =
+		totalIncome / totalDayCountOfIncomes - totalOutgoing / totalDayCountOfOutgoings;
 </script>
 
 <!-- Profit/Loss Display -->
@@ -28,10 +33,22 @@
 				<td>Gelir</td>
 				<td>{formatter(totalIncome)}</td>
 			</tr>
+			{#if totalDayCountOfIncomes > 0}
+				<tr class="!text-right opacity-50">
+					<td>Günlük ortalama</td>
+					<td>{formatter(totalIncome / totalDayCountOfIncomes)}</td>
+				</tr>
+			{/if}
 			<tr class="!text-right">
 				<td>Gider</td>
 				<td>{formatter(totalOutgoing)}</td>
 			</tr>
+			{#if totalDayCountOfOutgoings > 0}
+				<tr class="!text-right opacity-50">
+					<td>Günlük ortalama</td>
+					<td>{formatter(totalOutgoing / totalDayCountOfOutgoings)}</td>
+				</tr>
+			{/if}
 		</tbody>
 		<tfoot>
 			<tr>
@@ -48,6 +65,16 @@
 						: `%${Math.abs(profitLossPercentage).toFixed(2).replace('.', ',')} zarar`}
 				</td>
 			</tr>
+			{#if DailyAverageDifference}
+				<tr class="opacity-50">
+					<td>Günlük ortalama fark</td>
+					<td
+						class={`${DailyAverageDifference >= 0 ? 'text-success-500' : 'text-error-500'} text-right`}
+					>
+						{formatter(DailyAverageDifference)}
+					</td>
+				</tr>
+			{/if}
 		</tfoot>
 	</table>
 </div>

@@ -59,3 +59,27 @@ export function getTotalOutgoings(list: SelectOutgoing[]) {
 
 	return sortByPriceDescending(result);
 }
+
+export function getTotalDayCountOfIncomes(list: SelectIncome[]): number {
+	const dateSet = new Set<string>();
+
+	// "date" parametresine göre tarihleri Set'e ekleme
+	list.forEach((income) => {
+		dateSet.add(income.date);
+	});
+
+	// Farklı tarihlerin sayısını döndür
+	return dateSet.size;
+}
+
+export function getTotalDayCountOfOutgoings(list: SelectOutgoing[]): number {
+	const dateSet = new Set<string>();
+
+	// "date" parametresine göre tarihleri Set'e ekleme
+	list.forEach((outgoing) => {
+		dateSet.add(outgoing.date);
+	});
+
+	// Farklı tarihlerin sayısını döndür
+	return dateSet.size;
+}

@@ -1,13 +1,21 @@
 <script lang="ts">
 	import MonthlyReport from '$lib/components/MonthlyReport.svelte';
-	import { dateToSlug, monthAndYear, nextMonth, previousMonth } from '$lib/utils/dateFormat';
-	import { getTotalIncomes, getTotalOutgoings } from '$lib/calculations';
+	import { monthAndYear, nextMonth, previousMonth } from '$lib/utils/dateFormat';
+	import {
+		getTotalDayCountOfIncomes,
+		getTotalDayCountOfOutgoings,
+		getTotalIncomes,
+		getTotalOutgoings
+	} from '$lib/calculations';
 	import { ChevronLeft, ChevronRight } from 'lucide-svelte';
 
 	let { data } = $props();
 
 	const incomeResults = getTotalIncomes(data.monthlyIncomes);
 	const outgoingResults = getTotalOutgoings(data.monthlyOutgoings);
+
+	const totalDayCountOfIncomes = getTotalDayCountOfIncomes(data.monthlyIncomes);
+	const totalDayCountOfOutgoings = getTotalDayCountOfOutgoings(data.monthlyOutgoings);
 </script>
 
 <div class="text-center">
@@ -34,7 +42,12 @@
 	</a>
 </div>
 
-<MonthlyReport monthlyIncomes={incomeResults} monthlyOutgoings={outgoingResults} />
+<MonthlyReport
+	monthlyIncomes={incomeResults}
+	monthlyOutgoings={outgoingResults}
+	{totalDayCountOfIncomes}
+	{totalDayCountOfOutgoings}
+/>
 
 <div class="text-center text-sm text-success-400">
 	<a data-sveltekit-reload href="/">Ana Sayfaya Git</a>
