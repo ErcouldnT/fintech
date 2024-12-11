@@ -13,8 +13,10 @@
 	const profitLoss: number = totalIncome - totalOutgoing;
 	const profitLossPercentage: number = totalIncome > 0 ? (profitLoss / totalIncome) * 100 : 0;
 
-	const DailyAverageDifference =
+	const dailyAverageDifference =
 		totalIncome / totalDayCountOfIncomes - totalOutgoing / totalDayCountOfOutgoings;
+
+	const greaterDayCount = Math.max(totalDayCountOfIncomes, totalDayCountOfOutgoings);
 </script>
 
 <!-- Profit/Loss Display -->
@@ -35,8 +37,8 @@
 			</tr>
 			{#if totalDayCountOfIncomes > 0}
 				<tr class="!text-right opacity-50">
-					<td>Günlük ortalama</td>
-					<td>{formatter(totalIncome / totalDayCountOfIncomes)}</td>
+					<td>{greaterDayCount} günlük ortalama</td>
+					<td>{formatter(totalIncome / greaterDayCount)}</td>
 				</tr>
 			{/if}
 			<tr class="!text-right">
@@ -45,8 +47,8 @@
 			</tr>
 			{#if totalDayCountOfOutgoings > 0}
 				<tr class="!text-right opacity-50">
-					<td>Günlük ortalama</td>
-					<td>{formatter(totalOutgoing / totalDayCountOfOutgoings)}</td>
+					<td>{greaterDayCount} günlük ortalama</td>
+					<td>{formatter(totalOutgoing / greaterDayCount)}</td>
 				</tr>
 			{/if}
 		</tbody>
@@ -65,15 +67,15 @@
 						: `%${Math.abs(profitLossPercentage).toFixed(2).replace('.', ',')} zarar`}
 				</td>
 			</tr>
-			{#if DailyAverageDifference}
+			{#if dailyAverageDifference}
 				<tr class="opacity-50">
 					<td>Günlük ortalama fark</td>
 					<td
-						class={`${DailyAverageDifference >= 0 ? 'text-success-500' : 'text-error-500'} text-right`}
+						class={`${dailyAverageDifference >= 0 ? 'text-success-500' : 'text-error-500'} text-right`}
 					>
-						{DailyAverageDifference >= 0
-							? '' + formatter(DailyAverageDifference)
-							: '-' + formatter(DailyAverageDifference).slice(1)}
+						{dailyAverageDifference >= 0
+							? '' + formatter(dailyAverageDifference)
+							: '-' + formatter(dailyAverageDifference).slice(1)}
 					</td>
 				</tr>
 			{/if}
