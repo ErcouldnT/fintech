@@ -71,7 +71,9 @@
 					<td
 						class={`${DailyAverageDifference >= 0 ? 'text-success-500' : 'text-error-500'} text-right`}
 					>
-						{formatter(DailyAverageDifference)}
+						{DailyAverageDifference >= 0
+							? '' + formatter(DailyAverageDifference)
+							: '-' + formatter(DailyAverageDifference).slice(1)}
 					</td>
 				</tr>
 			{/if}
