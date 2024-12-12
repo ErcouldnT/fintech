@@ -20,7 +20,7 @@
 		const data: InsertDailyFoods = {
 			foods: yemekInputs.filter((y) => y.trim() !== ''), // Boş değerleri filtrele
 			slogan: slogan.trim(),
-			price: fiyat.trim(),
+			price: fiyat.trim().match(/\d+/)?.[0] || '',
 			note: not.trim()
 		};
 
