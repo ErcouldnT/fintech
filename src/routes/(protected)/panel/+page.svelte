@@ -1,6 +1,9 @@
 <script lang="ts">
 	let yemekInputs: string[] = ['']; // İlk input
 	let yemekler: string[] = [];
+	let slogan: string = '';
+	let fiyat: string = '';
+	let notlar: string = '';
 
 	function yemekEkle() {
 		yemekInputs = [...yemekInputs, '']; // Yeni input ekle
@@ -12,7 +15,13 @@
 
 	function kaydet() {
 		yemekler = yemekInputs.filter((y) => y.trim() !== ''); // Boş değerleri filtrele
-		console.log(yemekler); // Konsolda göster
+		const data = {
+			yemekler,
+			slogan: slogan.trim(),
+			fiyat: fiyat.trim(),
+			notlar: notlar.trim()
+		};
+		console.log(data); // Konsolda göster
 	}
 </script>
 
@@ -35,17 +44,17 @@
 
 	<label class="label">
 		<span class="label-text">Slogan</span>
-		<input class="input" type="text" placeholder="" />
+		<input class="input" type="text" bind:value={slogan} placeholder="" />
 	</label>
 
 	<label class="label">
 		<span class="label-text">Fiyat</span>
-		<input class="input" type="text" placeholder="" />
+		<input class="input" type="text" bind:value={fiyat} placeholder="" />
 	</label>
 
 	<label class="label">
 		<span class="label-text">Not</span>
-		<input class="input" type="text" placeholder="" />
+		<input class="input" type="text" bind:value={notlar} placeholder="" />
 	</label>
 
 	<button type="submit" class="btn preset-filled-success-500">Kaydet</button>
