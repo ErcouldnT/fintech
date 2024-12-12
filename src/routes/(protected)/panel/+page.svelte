@@ -1,10 +1,14 @@
 <script lang="ts">
-	import type { InsertDailyFoods } from '$lib/server/db/schema';
+	import type { InsertDailyFoods, SelectDailyFoods } from '$lib/server/db/schema';
 
-	let yemekInputs: string[] = ['']; // İlk input
-	let slogan: string = '';
-	let fiyat: string = '';
-	let not: string = '';
+	let { data } = $props();
+
+	const db: SelectDailyFoods = data.foodsData;
+
+	let yemekInputs: string[] = $state(db.foods); // İlk input
+	let slogan: string = $state(db.slogan);
+	let fiyat: string = $state(db.price);
+	let not: string = $state(db.note!);
 
 	function yemekEkle() {
 		yemekInputs = [...yemekInputs, '']; // Yeni input ekle
@@ -18,6 +22,7 @@
 		event.preventDefault(); // Sayfa yenilenmesini engelle
 
 		const data: InsertDailyFoods = {
+			id: db.id,
 			foods: yemekInputs.filter((y) => y.trim() !== ''), // Boş değerleri filtrele
 			slogan: slogan.trim(),
 			price: fiyat.trim().match(/\d+/)?.[0] || '',
@@ -26,7 +31,7 @@
 
 		try {
 			const response = await fetch('/api/yemekler', {
-				method: 'POST',
+				method: 'PUT',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(data)
 			});
