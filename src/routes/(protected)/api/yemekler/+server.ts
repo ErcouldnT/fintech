@@ -11,9 +11,10 @@ export const PUT = async ({ request }) => {
 
 		await db.update(dailyFoodsTable).set(data).where(eq(dailyFoodsTable.id, id));
 
-		return json({ success: true, message: 'Veri güncellendi.' }, { status: 201 });
+		return json({ success: true, message: 'Veri güncellendi.' }, { status: 200 });
 	} catch (error) {
-		console.error(error.message);
-		return json({ error: 'Bir hata oluştu.' }, { status: 500 });
+		const errorMessage = error instanceof Error ? error.message : 'Bir hata oluştu.';
+		console.error(errorMessage);
+		return json({ error: errorMessage }, { status: 500 });
 	}
 };
