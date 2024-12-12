@@ -1,9 +1,10 @@
 <script lang="ts">
+	import type { InsertDailyFoods } from '$lib/server/db/schema';
+
 	let yemekInputs: string[] = ['']; // İlk input
-	let yemekler: string[] = [];
 	let slogan: string = '';
 	let fiyat: string = '';
-	let notlar: string = '';
+	let not: string = '';
 
 	function yemekEkle() {
 		yemekInputs = [...yemekInputs, '']; // Yeni input ekle
@@ -13,15 +14,32 @@
 		yemekInputs = yemekInputs.filter((_, i) => i !== index); // İlgili index'teki öğeyi kaldır
 	}
 
-	function kaydet() {
-		yemekler = yemekInputs.filter((y) => y.trim() !== ''); // Boş değerleri filtrele
-		const data = {
-			yemekler,
+	async function kaydet(event: Event) {
+		event.preventDefault(); // Sayfa yenilenmesini engelle
+
+		const data: InsertDailyFoods = {
+			foods: yemekInputs.filter((y) => y.trim() !== ''), // Boş değerleri filtrele
 			slogan: slogan.trim(),
-			fiyat: fiyat.trim(),
-			notlar: notlar.trim()
+			price: fiyat.trim(),
+			note: not.trim()
 		};
-		console.log(data); // Konsolda göster
+
+		try {
+			const response = await fetch('/api/yemekler', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(data)
+			});
+
+			if (!response.ok) {
+				throw new Error(await response.text());
+			}
+
+			const result = await response.json();
+			console.log('Kaydetme başarılı:', result);
+		} catch (error) {
+			console.error('Kaydetme hatası:', error);
+		}
 	}
 </script>
 
@@ -54,7 +72,7 @@
 
 	<label class="label">
 		<span class="label-text">Not</span>
-		<input class="input" type="text" bind:value={notlar} placeholder="" />
+		<input class="input" type="text" bind:value={not} placeholder="" />
 	</label>
 
 	<button type="submit" class="btn preset-filled-success-500">Kaydet</button>
