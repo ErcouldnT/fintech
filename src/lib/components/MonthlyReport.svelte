@@ -1,7 +1,15 @@
 <script lang="ts">
 	import { formatter } from '$lib/utils/currencyFormat';
-	import { getTotalPrice, type monthlyIncome, type monthlyOutgoing } from '$lib/calculations';
+	import {
+		getOutgoingSummary,
+		getTotalPrice,
+		type monthlyIncome,
+		type monthlyOutgoing
+	} from '$lib/calculations';
+	import type { SelectIncome, SelectOutgoing } from '$lib/server/db/schema';
 
+	export let incomes: SelectIncome[] = [];
+	export let outgoings: SelectOutgoing[] = [];
 	export let monthlyIncomes: monthlyIncome[] = [];
 	export let monthlyOutgoings: monthlyOutgoing[] = [];
 	export let totalDayCountOfIncomes: number = 0;
@@ -17,6 +25,8 @@
 		totalIncome / totalDayCountOfIncomes - totalOutgoing / totalDayCountOfOutgoings;
 
 	const greaterDayCount = Math.max(totalDayCountOfIncomes, totalDayCountOfOutgoings);
+
+	const outgoingSummary = getOutgoingSummary(outgoings);
 </script>
 
 <!-- Profit/Loss Display -->
@@ -155,6 +165,14 @@
 			{/if}
 		</tbody>
 		<tfoot>
+			<tr class="opacity-50">
+				<td class="text-left">Nakit</td>
+				<td class="text-right">{formatter(outgoingSummary.cashTotal)}</td>
+			</tr>
+			<tr class="opacity-50">
+				<td class="text-left">Kredi kartı</td>
+				<td class="text-right">{formatter(outgoingSummary.creditCardTotal)}</td>
+			</tr>
 			<tr>
 				<td class="text-left">Toplam</td>
 				<td class="text-right">{formatter(totalOutgoing)}</td>

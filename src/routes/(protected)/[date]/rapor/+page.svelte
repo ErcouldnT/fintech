@@ -47,6 +47,8 @@
 	monthlyOutgoings={outgoingResults}
 	{totalDayCountOfIncomes}
 	{totalDayCountOfOutgoings}
+	incomes={data.monthlyIncomes}
+	outgoings={data.monthlyOutgoings}
 />
 
 <div class="text-center text-sm text-success-400">

@@ -83,3 +83,21 @@ export function getTotalDayCountOfOutgoings(list: SelectOutgoing[]): number {
 	// Farklı tarihlerin sayısını döndür
 	return dateSet.size;
 }
+
+export function getOutgoingSummary(list: SelectOutgoing[]): {
+	creditCardTotal: number;
+	cashTotal: number;
+} {
+	let creditCardTotal = 0;
+	let cashTotal = 0;
+
+	list.forEach((outgoing) => {
+		if (outgoing.with === 'POS') {
+			creditCardTotal += parseFloat(outgoing.price);
+		} else if (outgoing.with === 'Nakit') {
+			cashTotal += parseFloat(outgoing.price);
+		}
+	});
+
+	return { creditCardTotal, cashTotal };
+}
