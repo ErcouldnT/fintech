@@ -2,18 +2,22 @@
 	import { formatter } from '$lib/utils/currencyFormat';
 	import {
 		getOutgoingSummary,
-		getTotalPrice,
-		type monthlyIncome,
-		type monthlyOutgoing
+		getTotalDayCountOfIncomes,
+		getTotalDayCountOfOutgoings,
+		getTotalIncomes,
+		getTotalOutgoings,
+		getTotalPrice
 	} from '$lib/calculations';
 	import type { SelectIncome, SelectOutgoing } from '$lib/server/db/schema';
 
 	export let incomes: SelectIncome[] = [];
 	export let outgoings: SelectOutgoing[] = [];
-	export let monthlyIncomes: monthlyIncome[] = [];
-	export let monthlyOutgoings: monthlyOutgoing[] = [];
-	export let totalDayCountOfIncomes: number = 0;
-	export let totalDayCountOfOutgoings: number = 0;
+
+	const monthlyIncomes = getTotalIncomes(incomes);
+	const monthlyOutgoings = getTotalOutgoings(outgoings);
+
+	const totalDayCountOfIncomes = getTotalDayCountOfIncomes(incomes);
+	const totalDayCountOfOutgoings = getTotalDayCountOfOutgoings(outgoings);
 
 	const totalIncome = getTotalPrice(monthlyIncomes);
 	const totalOutgoing = getTotalPrice(monthlyOutgoings);
