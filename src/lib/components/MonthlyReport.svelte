@@ -67,23 +67,17 @@
 			{/if}
 		</tbody>
 		<tfoot>
-			<tr>
-				<td>Fark</td>
-				<td class="text-right"
-					>{profitLoss >= 0 ? '' + formatter(profitLoss) : '-' + formatter(profitLoss).slice(1)}</td
-				>
-			</tr>
-			<tr>
+			<tr class="">
 				<td>Yüzde</td>
 				<td class={`${profitLoss >= 0 ? 'text-success-500' : 'text-error-500'} text-right`}>
 					{profitLoss >= 0
-						? `%${profitLossPercentage.toFixed(2).replace('.', ',')} kâr`
-						: `%${Math.abs(profitLossPercentage).toFixed(2).replace('.', ',')} zarar`}
+						? `% ${profitLossPercentage.toFixed(2).replace('.', ',')} kâr`
+						: `% ${Math.abs(profitLossPercentage).toFixed(2).replace('.', ',')} zarar`}
 				</td>
 			</tr>
 			{#if dailyAverageDifference}
-				<tr class="opacity-50">
-					<td>Günlük ortalama fark</td>
+				<tr class="">
+					<td>Günlük</td>
 					<td
 						class={`${dailyAverageDifference >= 0 ? 'text-success-500' : 'text-error-500'} text-right`}
 					>
@@ -93,6 +87,12 @@
 					</td>
 				</tr>
 			{/if}
+			<tr>
+				<td>Aylık kazanç</td>
+				<td class="text-right"
+					>{profitLoss >= 0 ? '' + formatter(profitLoss) : '-' + formatter(profitLoss).slice(1)}</td
+				>
+			</tr>
 		</tfoot>
 	</table>
 </div>
