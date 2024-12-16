@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { page } from '$app/stores';
 	import { Undo2 } from 'lucide-svelte';
 </script>
