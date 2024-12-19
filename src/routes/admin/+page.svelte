@@ -1,14 +1,16 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { authClient } from '$lib/auth-client';
-	import { goto } from '$app/navigation';
+	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
 
+	let isLoading = $state(false);
 	let email = $state('');
 	let password = $state('');
 	// let name = $state('');
 
 	const handleSignIn = async (e: Event) => {
 		e.preventDefault();
+		isLoading = true;
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { data, error } = await authClient.signIn.email({
@@ -16,9 +18,14 @@
 			password: password
 		});
 
-		if (!error) await goto('/');
+		// if error, show error message to user in toast and clear password field
+		if (error) {
+			isLoading = false;
+			password = '';
+			return alert('"HATALI EMAİL VEYA ŞİFRE"');
+		}
 
-		// TODO: if error, show error message to user in toast and clear password field
+		window.location.href = '/';
 	};
 
 	// const signUp = async (e) => {
@@ -43,18 +50,22 @@
 
 <h1 class="text-center">Yönetici parolası</h1>
 
-<form class="space-y-4" action="">
-	<label class="label">
-		<span class="label-text">Email</span>
-		<input bind:value={email} class="input" type="text" name="email" placeholder="" />
-	</label>
+{#if isLoading}
+	<LoadingSpinner />
+{:else}
+	<form class="space-y-4" action="">
+		<label class="label">
+			<span class="label-text">Email</span>
+			<input bind:value={email} class="input" type="text" name="email" placeholder="" />
+		</label>
 
-	<label class="label">
-		<span class="label-text">Şifre</span>
-		<input bind:value={password} class="input" type="password" name="password" placeholder="" />
-	</label>
-	<button onclick={handleSignIn} class="btn preset-tonal">Giriş yap</button>
-</form>
+		<label class="label">
+			<span class="label-text">Şifre</span>
+			<input bind:value={password} class="input" type="password" name="password" placeholder="" />
+		</label>
+		<button onclick={handleSignIn} class="btn preset-tonal">Giriş yap </button>
+	</form>
+{/if}
 
 <!--<form class="space-y-4" action="">-->
 <!--	<label class="label">-->
