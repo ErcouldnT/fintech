@@ -175,21 +175,35 @@
 	};
 
 	let selectedItemToDelete: SelectIncome | SelectOutgoing | null = null;
-	let deleteAction: (item: SelectIncome | SelectOutgoing) => Promise<void> = async () => {};
+	let deleteIncomeAction: (item: SelectIncome) => Promise<void> = async () => {};
+	let deleteOutgoingAction: (item: SelectOutgoing) => Promise<void> = async () => {};
 	let confirmModalOpen = $state(false);
 
-	const openConfirmModal = (
-		item: SelectIncome | SelectOutgoing,
-		action: (item: SelectIncome | SelectOutgoing) => Promise<void>
+	const openConfirmModalForIncome = (
+		item: SelectIncome,
+		action: (item: SelectIncome) => Promise<void>
 	): void => {
 		selectedItemToDelete = item;
-		deleteAction = action;
+		deleteIncomeAction = action;
+		confirmModalOpen = true;
+	};
+
+	const openConfirmModalForOutgoing = (
+		item: SelectOutgoing,
+		action: (item: SelectOutgoing) => Promise<void>
+	): void => {
+		selectedItemToDelete = item;
+		deleteOutgoingAction = action;
 		confirmModalOpen = true;
 	};
 
 	const confirmDelete = async (): Promise<void> => {
 		if (selectedItemToDelete) {
-			await deleteAction(selectedItemToDelete);
+			if ('item' in selectedItemToDelete) {
+				await deleteOutgoingAction(selectedItemToDelete as SelectOutgoing);
+			} else {
+				await deleteIncomeAction(selectedItemToDelete as SelectIncome);
+			}
 			confirmModalOpen = false;
 		}
 	};
@@ -230,7 +244,7 @@
 					<tr class="group !text-right">
 						<td class="text-left">
 							<button
-								onclick={() => openConfirmModal(gelir, gelirSil)}
+								onclick={() => openConfirmModalForIncome(gelir, gelirSil)}
 								class="w-2 text-center opacity-0 transition-opacity hover:text-red-500 group-hover:opacity-100"
 							>
 								<NotebookPen size="16" />
@@ -380,7 +394,7 @@
 					<tr class="group !text-right">
 						<td class="text-left">
 							<button
-								onclick={() => openConfirmModal(gider, giderSil)}
+								onclick={() => openConfirmModalForOutgoing(gider, giderSil)}
 								class="w-2 text-center opacity-0 transition-opacity hover:text-red-500 group-hover:opacity-100"
 							>
 								<NotebookPen size="16" />

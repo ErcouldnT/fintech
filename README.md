@@ -11,3 +11,5 @@
 - Günlük kar-zarar durumunu göster
 - Önceki güne, aya göre kar-zarar durumu
 - Login için yönlendirirken önceki url'yi hatırla
+- demo account
+- code improv.
