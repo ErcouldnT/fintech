@@ -271,11 +271,11 @@
 			{/if}
 		</tbody>
 		<tfoot>
-			<tr>
+			<tr class="opacity-50">
 				<td colspan="2">Nakit</td>
 				<td class="text-right">{toplamNakitGelir()}</td>
 			</tr>
-			<tr>
+			<tr class="opacity-50">
 				<td colspan="2">POS</td>
 				<td class="text-right">{toplamPOSGelir()}</td>
 			</tr>
@@ -368,7 +368,7 @@
 				<p class="text-[#e03052]">Yemeksepeti</p>
 			</label>
 
-			<p class="text-right text-sm">Kart faiz %{faiz}</p>
+			<p class="text-right text-sm">Kart faiz: % {faiz.toString().replace('.', ',')}</p>
 		</div>
 		<footer class="flex justify-end gap-4">
 			<button type="button" class="btn preset-tonal" onclick={gelirModalClose}>İptal</button>
@@ -414,11 +414,11 @@
 			{/if}
 		</tbody>
 		<tfoot>
-			<tr>
+			<tr class="opacity-50">
 				<td colspan="3">Nakit</td>
 				<td class="text-right">{toplamNakitGider()}</td>
 			</tr>
-			<tr>
+			<tr class="opacity-50">
 				<td colspan="3">Kredi Kartı</td>
 				<td class="text-right">{toplamPOSGider()}</td>
 			</tr>
