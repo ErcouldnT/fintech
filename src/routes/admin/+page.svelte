@@ -10,12 +10,15 @@
 	const handleSignIn = async (e: Event) => {
 		e.preventDefault();
 
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { data, error } = await authClient.signIn.email({
 			email: email,
 			password: password
 		});
 
 		if (!error) await goto('/');
+
+		// TODO: if error, show error message to user in toast and clear password field
 	};
 
 	// const signUp = async (e) => {

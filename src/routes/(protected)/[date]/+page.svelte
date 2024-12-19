@@ -495,9 +495,10 @@
 <!-- Confirmation Modal -->
 <Modal bind:open={confirmModalOpen} backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
-		<div
+		<!-- svelte-ignore a11y_invalid_attribute -->
+		<a
+			href="#"
 			class="card max-w-screen-sm space-y-4 p-4 shadow-xl bg-surface-100-900"
-			role="dialog"
 			aria-labelledby="modal-header"
 			onkeydown={(event) => {
 				if (event.key === 'Enter') {
@@ -515,7 +516,7 @@
 				</button>
 				<button type="button" class="btn preset-filled" onclick={confirmDelete}>Evet</button>
 			</footer>
-		</div>
+		</a>
 	{/snippet}
 </Modal>
 

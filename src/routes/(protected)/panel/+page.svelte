@@ -51,6 +51,7 @@
 <h1 class="text-center text-xl text-success-500">Günlük Yemekler</h1>
 
 <form onsubmit={kaydet} class="flex flex-col space-y-4">
+	<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
 	{#each yemekInputs as _, index}
 		<label class="label">
 			<span class="label-text">Yemek {index + 1}</span>
