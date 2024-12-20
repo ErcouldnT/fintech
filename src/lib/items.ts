@@ -86,7 +86,8 @@ export const shoppingList: [string, ...string[]] = [
 	'Süt',
 	'İskambil kağıtları',
 	'Schnitzel',
-	'Baharatlar'
+	'Baharatlar',
+	'Islak mendil'
 ];
 
 const items: { label: string; value: string }[] = [];
