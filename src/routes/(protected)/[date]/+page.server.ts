@@ -10,10 +10,9 @@ export async function load({ params }) {
 		throw error(404, 'Geçersiz tarih formatı.');
 	}
 
-	const [incomes, outgoings] = await Promise.all([
-		getIncomesByDate(dateToSlug(date)),
-		getOutgoingsByDate(dateToSlug(date))
-	]);
+	// TODO: Bunları Promise olarak gönder ön tarafa. Daha hızlı olacak.
+	const incomes = getIncomesByDate(dateToSlug(date));
+	const outgoings = getOutgoingsByDate(dateToSlug(date));
 
 	return {
 		date,

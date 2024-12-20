@@ -8,8 +8,10 @@
 	} from '$lib/server/db/schema';
 	import items from '$lib/items';
 	import { ChevronLeft, ChevronRight, CreditCard, Minus, Plus, NotebookPen } from 'lucide-svelte';
-	import { dateToSlug, nextDay, openDate, previousDay } from '$lib/utils/dateFormat';
+	import { dateToSlug, nextDay, previousDay } from '$lib/utils/dateFormat';
 	import { formatter } from '$lib/utils/currencyFormat';
+	import DayTitle from '$lib/components/DayTitle.svelte';
+	import DayChanger from '$lib/components/DayChanger.svelte';
 
 	let { data } = $props();
 
@@ -22,7 +24,7 @@
 	let gelirStateModal = $state(false);
 	let gelirMiktar = $state(0);
 	let selectedGelirTipi: InsertIncome['with'] = $state('Nakit');
-	let allGelirs: SelectIncome[] = $state(data.incomes);
+	let allGelirs: SelectIncome[] = [];
 
 	function gelirModalClose() {
 		gelirMiktar = 0;
@@ -57,7 +59,7 @@
 	let selectedGiderKalemi = $state(['tost']);
 	let giderMiktar = $state(0);
 	let selectedGiderTipi: InsertOutgoing['with'] = $state('Nakit');
-	let allGiders: SelectOutgoing[] = $state(data.outgoings);
+	let allGiders: SelectOutgoing[] = [];
 
 	interface GiderKalemi {
 		label: string;
@@ -207,26 +209,19 @@
 			confirmModalOpen = false;
 		}
 	};
+
+	const fetchAllGelirs = async () => {
+		allGelirs = await data.incomes;
+	};
+
+	const fetchAllGiders = async () => {
+		allGiders = await data.outgoings;
+	};
 </script>
 
-<div class="text-center">
-	<h1 class="text-xs">{dateToSlug(data.date)}</h1>
-	<h2 class="text-success-400">{openDate(data.date)}</h2>
-</div>
+<DayTitle date={data.date} />
 
-<hr class="hr border-t-2" />
-
-<div class="flex justify-between gap-4 text-sm">
-	<a href={'/' + previousDay(data.date)} data-sveltekit-reload type="button" class="btn">
-		<ChevronLeft />
-		<span>Önceki gün</span>
-	</a>
-
-	<a href={'/' + nextDay(data.date)} data-sveltekit-reload type="button" class="btn">
-		<span>Sonraki gün</span>
-		<ChevronRight />
-	</a>
-</div>
+<DayChanger date={data.date} />
 
 <div class="table-wrap pb-4">
 	<table class="table caption-top">
@@ -494,7 +489,7 @@
 	{/snippet}
 </Modal>
 
-<!-- Confirmation Modal -->
+<!-- Delete Confirmation Modal -->
 <Modal bind:open={confirmModalOpen} backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
 		<div
@@ -521,11 +516,6 @@
 		</div>
 	{/snippet}
 </Modal>
-
-<!--<pre>{JSON.stringify(allGelirs, null, 2)}</pre>-->
-<!--<pre>{JSON.stringify(allGiders, null, 2)}</pre>-->
-
-<!--<GoToDate />-->
 
 <div class="text-center text-sm text-success-400">
 	<a data-sveltekit-reload href="{dateToSlug(data.date)}/rapor">Aylık Toplam Göster</a>
