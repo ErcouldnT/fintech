@@ -10,6 +10,7 @@
 	import { ChevronLeft, ChevronRight, CreditCard, Minus, Plus, NotebookPen } from 'lucide-svelte';
 	import { dateToSlug, nextDay, openDate, previousDay } from '$lib/utils/dateFormat';
 	import { formatter } from '$lib/utils/currencyFormat';
+	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
 
 	let { data } = $props();
 
@@ -22,7 +23,7 @@
 	let gelirStateModal = $state(false);
 	let gelirMiktar = $state(0);
 	let selectedGelirTipi: InsertIncome['with'] = $state('Nakit');
-	let allGelirs: SelectIncome[] = $state(data.incomes);
+	let allGelirs: SelectIncome[] = [];
 
 	function gelirModalClose() {
 		gelirMiktar = 0;
@@ -57,7 +58,7 @@
 	let selectedGiderKalemi = $state(['tost']);
 	let giderMiktar = $state(0);
 	let selectedGiderTipi: InsertOutgoing['with'] = $state('Nakit');
-	let allGiders: SelectOutgoing[] = $state(data.outgoings);
+	let allGiders: SelectOutgoing[] = [];
 
 	interface GiderKalemi {
 		label: string;
@@ -207,6 +208,13 @@
 			confirmModalOpen = false;
 		}
 	};
+
+	const setAllData = async () => {
+		allGelirs = await data.incomes;
+		allGiders = await data.outgoings;
+	};
+
+	setAllData();
 </script>
 
 <div class="text-center">
@@ -228,64 +236,70 @@
 	</a>
 </div>
 
-<div class="table-wrap pb-4">
-	<table class="table caption-top">
-		<caption class="pt-4">Gelir durumu</caption>
-		<thead>
-			<tr>
-				<th class="!text-right"></th>
-				<th class="!text-right"></th>
-				<th class="!text-right">Fiyat</th>
-			</tr>
-		</thead>
-		<tbody class={allGelirs.length > 0 ? 'hover:[&>tr]:preset-tonal-primary' : ''}>
-			{#if allGelirs && allGelirs.length > 0}
-				{#each allGelirs as gelir}
-					<tr class="group !text-right">
-						<td class="text-left">
-							<button
-								onclick={() => openConfirmModalForIncome(gelir, gelirSil)}
-								class="w-2 text-center opacity-0 transition-opacity hover:text-red-500 group-hover:opacity-100"
-							>
-								<NotebookPen size="16" />
-							</button>
-						</td>
-						<td
-							class={gelir.with === 'POS'
-								? 'text-[orange]'
-								: '' + gelir.with === 'Getir'
-									? 'text-[#5a3bb6]'
-									: '' + gelir.with === 'Trendyol'
-										? 'text-[#fb641f]'
-										: '' + gelir.with === 'Yemeksepeti'
-											? 'text-[#e03052]'
-											: ''}>{gelir.with}</td
-						>
-						<td>{formatter(Number(gelir.price))}</td>
-					</tr>
-				{/each}
-			{:else}
+{#await data.incomes}
+	<LoadingSpinner />
+{:then gelirs}
+	<div class="table-wrap pb-4">
+		<table class="table caption-top">
+			<caption class="pt-4">Gelir durumu</caption>
+			<thead>
 				<tr>
-					<td colspan="4" class="text-center">Lütfen veri giriniz.</td>
+					<th class="!text-right"></th>
+					<th class="!text-right"></th>
+					<th class="!text-right">Fiyat</th>
 				</tr>
-			{/if}
-		</tbody>
-		<tfoot>
-			<tr class="opacity-50">
-				<td colspan="2">Nakit</td>
-				<td class="text-right">{toplamNakitGelir()}</td>
-			</tr>
-			<tr class="opacity-50">
-				<td colspan="2">POS</td>
-				<td class="text-right">{toplamPOSGelir()}</td>
-			</tr>
-			<tr>
-				<td colspan="2">Toplam</td>
-				<td class="text-right">{toplamGelirHesapla()}</td>
-			</tr>
-		</tfoot>
-	</table>
-</div>
+			</thead>
+			<tbody class={gelirs.length > 0 ? 'hover:[&>tr]:preset-tonal-primary' : ''}>
+				{#if gelirs && gelirs.length > 0}
+					{#each gelirs as gelir}
+						<tr class="group !text-right">
+							<td class="text-left">
+								<button
+									onclick={() => openConfirmModalForIncome(gelir, gelirSil)}
+									class="w-2 text-center opacity-0 transition-opacity hover:text-red-500 group-hover:opacity-100"
+								>
+									<NotebookPen size="16" />
+								</button>
+							</td>
+							<td
+								class={gelir.with === 'POS'
+									? 'text-[orange]'
+									: '' + gelir.with === 'Getir'
+										? 'text-[#5a3bb6]'
+										: '' + gelir.with === 'Trendyol'
+											? 'text-[#fb641f]'
+											: '' + gelir.with === 'Yemeksepeti'
+												? 'text-[#e03052]'
+												: ''}>{gelir.with}</td
+							>
+							<td>{formatter(Number(gelir.price))}</td>
+						</tr>
+					{/each}
+				{:else}
+					<tr>
+						<td colspan="4" class="text-center">Lütfen veri giriniz.</td>
+					</tr>
+				{/if}
+			</tbody>
+			<tfoot>
+				<tr class="opacity-50">
+					<td colspan="2">Nakit</td>
+					<td class="text-right">{toplamNakitGelir()}</td>
+				</tr>
+				<tr class="opacity-50">
+					<td colspan="2">POS</td>
+					<td class="text-right">{toplamPOSGelir()}</td>
+				</tr>
+				<tr>
+					<td colspan="2">Toplam</td>
+					<td class="text-right">{toplamGelirHesapla()}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+{:catch error}
+	<p>Bir hata oluştu: {error.message}</p>
+{/await}
 
 <Modal
 	bind:open={gelirStateModal}
@@ -379,58 +393,64 @@
 	{/snippet}
 </Modal>
 
-<div class="table-wrap pb-4">
-	<table class="table caption-top">
-		<caption class="pt-4">Gider durumu</caption>
-		<thead>
-			<tr>
-				<th class="!text-right"></th>
-				<th class="!text-right"></th>
-				<th class="!text-right"></th>
-				<th class="!text-right">Fiyat</th>
-			</tr>
-		</thead>
-		<tbody class={allGiders.length > 0 ? 'hover:[&>tr]:preset-tonal-primary' : ''}>
-			{#if allGiders && allGiders.length > 0}
-				{#each allGiders as gider}
-					<tr class="group !text-right">
-						<td class="text-left">
-							<button
-								onclick={() => openConfirmModalForOutgoing(gider, giderSil)}
-								class="w-2 text-center opacity-0 transition-opacity hover:text-red-500 group-hover:opacity-100"
-							>
-								<NotebookPen size="16" />
-							</button>
-						</td>
-						<td>{gider.item}</td>
-						<td class="!text-right"
-							>{#if gider.with === 'POS'}<CreditCard color="orange" />{/if}</td
-						>
-						<td>{formatter(Number(gider.price))}</td>
-					</tr>
-				{/each}
-			{:else}
+{#await data.outgoings}
+	<LoadingSpinner />
+{:then giders}
+	<div class="table-wrap pb-4">
+		<table class="table caption-top">
+			<caption class="pt-4">Gider durumu</caption>
+			<thead>
 				<tr>
-					<td colspan="4" class="text-center">Lütfen veri giriniz.</td>
+					<th class="!text-right"></th>
+					<th class="!text-right"></th>
+					<th class="!text-right"></th>
+					<th class="!text-right">Fiyat</th>
 				</tr>
-			{/if}
-		</tbody>
-		<tfoot>
-			<tr class="opacity-50">
-				<td colspan="3">Nakit</td>
-				<td class="text-right">{toplamNakitGider()}</td>
-			</tr>
-			<tr class="opacity-50">
-				<td colspan="3">Kredi Kartı</td>
-				<td class="text-right">{toplamPOSGider()}</td>
-			</tr>
-			<tr>
-				<td colspan="3">Toplam</td>
-				<td class="text-right">{toplamGiderHesapla()}</td>
-			</tr>
-		</tfoot>
-	</table>
-</div>
+			</thead>
+			<tbody class={giders.length > 0 ? 'hover:[&>tr]:preset-tonal-primary' : ''}>
+				{#if giders && giders.length > 0}
+					{#each giders as gider}
+						<tr class="group !text-right">
+							<td class="text-left">
+								<button
+									onclick={() => openConfirmModalForOutgoing(gider, giderSil)}
+									class="w-2 text-center opacity-0 transition-opacity hover:text-red-500 group-hover:opacity-100"
+								>
+									<NotebookPen size="16" />
+								</button>
+							</td>
+							<td>{gider.item}</td>
+							<td class="!text-right"
+								>{#if gider.with === 'POS'}<CreditCard color="orange" />{/if}</td
+							>
+							<td>{formatter(Number(gider.price))}</td>
+						</tr>
+					{/each}
+				{:else}
+					<tr>
+						<td colspan="4" class="text-center">Lütfen veri giriniz.</td>
+					</tr>
+				{/if}
+			</tbody>
+			<tfoot>
+				<tr class="opacity-50">
+					<td colspan="3">Nakit</td>
+					<td class="text-right">{toplamNakitGider()}</td>
+				</tr>
+				<tr class="opacity-50">
+					<td colspan="3">Kredi Kartı</td>
+					<td class="text-right">{toplamPOSGider()}</td>
+				</tr>
+				<tr>
+					<td colspan="3">Toplam</td>
+					<td class="text-right">{toplamGiderHesapla()}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+{:catch error}
+	<p>Bir hata oluştu: {error.message}</p>
+{/await}
 
 <Modal
 	bind:open={giderStateModal}
@@ -497,11 +517,11 @@
 <!-- Confirmation Modal -->
 <Modal bind:open={confirmModalOpen} backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
-		<!-- svelte-ignore a11y_invalid_attribute -->
-		<a
-			href="#"
+		<div
 			class="card max-w-screen-sm space-y-4 p-4 shadow-xl bg-surface-100-900"
 			aria-labelledby="modal-header"
+			role="button"
+			tabindex="0"
 			onkeydown={(event) => {
 				if (event.key === 'Enter') {
 					confirmDelete();
@@ -518,7 +538,7 @@
 				</button>
 				<button type="button" class="btn preset-filled" onclick={confirmDelete}>Evet</button>
 			</footer>
-		</a>
+		</div>
 	{/snippet}
 </Modal>
 
