@@ -7,9 +7,12 @@
 		SelectOutgoing
 	} from '$lib/server/db/schema';
 	import items from '$lib/items';
-	import { ChevronLeft, ChevronRight, CreditCard, Minus, Plus, NotebookPen } from 'lucide-svelte';
-	import { dateToSlug, nextDay, openDate, previousDay } from '$lib/utils/dateFormat';
+	import { CreditCard, Minus, Plus, NotebookPen } from 'lucide-svelte';
+	import { dateToSlug } from '$lib/utils/dateFormat';
 	import { formatter } from '$lib/utils/currencyFormat';
+	import DayTitle from '$lib/components/DayTitle.svelte';
+	import DayChanger from '$lib/components/DayChanger.svelte';
+	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
 
 	let { data } = $props();
 
@@ -22,7 +25,7 @@
 	let gelirStateModal = $state(false);
 	let gelirMiktar = $state(0);
 	let selectedGelirTipi: InsertIncome['with'] = $state('Nakit');
-	let allGelirs: SelectIncome[] = $state(data.incomes);
+	let allGelirs: SelectIncome[] = [];
 
 	function gelirModalClose() {
 		gelirMiktar = 0;
@@ -57,7 +60,7 @@
 	let selectedGiderKalemi = $state(['tost']);
 	let giderMiktar = $state(0);
 	let selectedGiderTipi: InsertOutgoing['with'] = $state('Nakit');
-	let allGiders: SelectOutgoing[] = $state(data.outgoings);
+	let allGiders: SelectOutgoing[] = [];
 
 	interface GiderKalemi {
 		label: string;
@@ -207,266 +210,107 @@
 			confirmModalOpen = false;
 		}
 	};
+
+	const fetchAllData = async () => {
+		const [gelirs, giders] = await Promise.all([data.incomes, data.outgoings]);
+		allGelirs = gelirs;
+		allGiders = giders;
+		return { gelirs, giders };
+	};
 </script>
 
-<div class="text-center">
-	<h1 class="text-xs">{dateToSlug(data.date)}</h1>
-	<h2 class="text-success-400">{openDate(data.date)}</h2>
-</div>
+<DayTitle date={data.date} />
+<DayChanger date={data.date} />
 
-<hr class="hr border-t-2" />
-
-<div class="flex justify-between gap-4 text-sm">
-	<a href={'/' + previousDay(data.date)} data-sveltekit-reload type="button" class="btn">
-		<ChevronLeft />
-		<span>Önceki gün</span>
-	</a>
-
-	<a href={'/' + nextDay(data.date)} data-sveltekit-reload type="button" class="btn">
-		<span>Sonraki gün</span>
-		<ChevronRight />
-	</a>
-</div>
-
-<div class="table-wrap pb-4">
-	<table class="table caption-top">
-		<caption class="pt-4">Gelir durumu</caption>
-		<thead>
-			<tr>
-				<th class="!text-right"></th>
-				<th class="!text-right"></th>
-				<th class="!text-right">Fiyat</th>
-			</tr>
-		</thead>
-		<tbody class={allGelirs.length > 0 ? 'hover:[&>tr]:preset-tonal-primary' : ''}>
-			{#if allGelirs && allGelirs.length > 0}
-				{#each allGelirs as gelir}
-					<tr class="group !text-right">
-						<td class="text-left">
-							<button
-								onclick={() => openConfirmModalForIncome(gelir, gelirSil)}
-								class="w-2 text-center opacity-0 transition-opacity hover:text-red-500 group-hover:opacity-100"
-							>
-								<NotebookPen size="16" />
-							</button>
-						</td>
-						<td
-							class={gelir.with === 'POS'
-								? 'text-[orange]'
-								: '' + gelir.with === 'Getir'
-									? 'text-[#5a3bb6]'
-									: '' + gelir.with === 'Trendyol'
-										? 'text-[#fb641f]'
-										: '' + gelir.with === 'Yemeksepeti'
-											? 'text-[#e03052]'
-											: ''}>{gelir.with}</td
-						>
-						<td>{formatter(Number(gelir.price))}</td>
-					</tr>
-				{/each}
-			{:else}
+{#await fetchAllData()}
+	<LoadingSpinner />
+{:then { gelirs, giders }}
+	<div class="table-wrap pb-4">
+		<table class="table caption-top">
+			<caption class="pt-4">Gelir durumu</caption>
+			<thead>
 				<tr>
-					<td colspan="4" class="text-center">Lütfen veri giriniz.</td>
+					<th class="!text-right"></th>
+					<th class="!text-right"></th>
+					<th class="!text-right">Fiyat</th>
 				</tr>
-			{/if}
-		</tbody>
-		<tfoot>
-			<tr class="opacity-50">
-				<td colspan="2">Nakit</td>
-				<td class="text-right">{toplamNakitGelir()}</td>
-			</tr>
-			<tr class="opacity-50">
-				<td colspan="2">POS</td>
-				<td class="text-right">{toplamPOSGelir()}</td>
-			</tr>
-			<tr>
-				<td colspan="2">Toplam</td>
-				<td class="text-right">{toplamGelirHesapla()}</td>
-			</tr>
-		</tfoot>
-	</table>
-</div>
-
-<Modal
-	bind:open={gelirStateModal}
-	triggerBase="btn preset-tonal"
-	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
-	backdropClasses="backdrop-blur-sm"
->
-	{#snippet trigger()}Gelir ekle <Plus />{/snippet}
-	{#snippet content()}
-		<header class="flex flex-row items-center">
-			<h2 class="h2">Gelir</h2>
-			<Plus />
-		</header>
-
-		<label class="label">
-			<span class="label-text">Fiyat</span>
-			<input
-				bind:value={gelirMiktar}
-				class="input"
-				type="text"
-				placeholder="0"
-				onkeydown={(e) => e.key === 'Enter' && gelirEkle()}
-			/>
-		</label>
-
-		<div class="space-y-1">
-			<label class="flex items-center space-x-2">
-				<input
-					bind:group={selectedGelirTipi}
-					class="radio"
-					type="radio"
-					checked
-					name="radio-direct"
-					value="Nakit"
-				/>
-				<p>Nakit</p>
-			</label>
-
-			<label class="flex items-center space-x-2">
-				<input
-					bind:group={selectedGelirTipi}
-					class="radio"
-					type="radio"
-					name="radio-direct"
-					value="POS"
-				/>
-				<p>Kredi kartı</p>
-			</label>
-
-			<label class="flex items-center space-x-2">
-				<input
-					bind:group={selectedGelirTipi}
-					class="radio"
-					type="radio"
-					name="radio-direct"
-					value="Getir"
-				/>
-				<p class="text-[#5a3bb6]">Getir</p>
-			</label>
-
-			<label class="flex items-center space-x-2">
-				<input
-					bind:group={selectedGelirTipi}
-					class="radio"
-					type="radio"
-					name="radio-direct"
-					value="Trendyol"
-				/>
-				<p class="text-[#fb641f]">Trendyol</p>
-			</label>
-
-			<label class="flex items-center space-x-2">
-				<input
-					bind:group={selectedGelirTipi}
-					class="radio"
-					type="radio"
-					name="radio-direct"
-					value="Yemeksepeti"
-				/>
-				<p class="text-[#e03052]">Yemeksepeti</p>
-			</label>
-
-			<p class="ml-28 pt-4 text-right text-sm">
-				Kart faiz: % {faiz.toString().replace('.', ',')}
-			</p>
-		</div>
-		<footer class="flex justify-end gap-4">
-			<button type="button" class="btn preset-tonal" onclick={gelirModalClose}>İptal</button>
-			<button type="button" class="btn preset-filled" onclick={gelirEkle}>Ekle</button>
-		</footer>
-	{/snippet}
-</Modal>
-
-<div class="table-wrap pb-4">
-	<table class="table caption-top">
-		<caption class="pt-4">Gider durumu</caption>
-		<thead>
-			<tr>
-				<th class="!text-right"></th>
-				<th class="!text-right"></th>
-				<th class="!text-right"></th>
-				<th class="!text-right">Fiyat</th>
-			</tr>
-		</thead>
-		<tbody class={allGiders.length > 0 ? 'hover:[&>tr]:preset-tonal-primary' : ''}>
-			{#if allGiders && allGiders.length > 0}
-				{#each allGiders as gider}
-					<tr class="group !text-right">
-						<td class="text-left">
-							<button
-								onclick={() => openConfirmModalForOutgoing(gider, giderSil)}
-								class="w-2 text-center opacity-0 transition-opacity hover:text-red-500 group-hover:opacity-100"
+			</thead>
+			<tbody class={gelirs.length > 0 ? 'hover:[&>tr]:preset-tonal-primary' : ''}>
+				{#if gelirs && gelirs.length > 0}
+					{#each gelirs as gelir}
+						<tr class="group !text-right">
+							<td class="text-left">
+								<button
+									onclick={() => openConfirmModalForIncome(gelir, gelirSil)}
+									class="w-2 text-center opacity-0 transition-opacity hover:text-red-500 group-hover:opacity-100"
+								>
+									<NotebookPen size="16" />
+								</button>
+							</td>
+							<td
+								class={gelir.with === 'POS'
+									? 'text-[orange]'
+									: '' + gelir.with === 'Getir'
+										? 'text-[#5a3bb6]'
+										: '' + gelir.with === 'Trendyol'
+											? 'text-[#fb641f]'
+											: '' + gelir.with === 'Yemeksepeti'
+												? 'text-[#e03052]'
+												: ''}>{gelir.with}</td
 							>
-								<NotebookPen size="16" />
-							</button>
-						</td>
-						<td>{gider.item}</td>
-						<td class="!text-right"
-							>{#if gider.with === 'POS'}<CreditCard color="orange" />{/if}</td
-						>
-						<td>{formatter(Number(gider.price))}</td>
+							<td>{formatter(Number(gelir.price))}</td>
+						</tr>
+					{/each}
+				{:else}
+					<tr>
+						<td colspan="4" class="text-center">Lütfen veri giriniz.</td>
 					</tr>
-				{/each}
-			{:else}
-				<tr>
-					<td colspan="4" class="text-center">Lütfen veri giriniz.</td>
+				{/if}
+			</tbody>
+			<tfoot>
+				<tr class="opacity-50">
+					<td colspan="2">Nakit</td>
+					<td class="text-right">{toplamNakitGelir()}</td>
 				</tr>
-			{/if}
-		</tbody>
-		<tfoot>
-			<tr class="opacity-50">
-				<td colspan="3">Nakit</td>
-				<td class="text-right">{toplamNakitGider()}</td>
-			</tr>
-			<tr class="opacity-50">
-				<td colspan="3">Kredi Kartı</td>
-				<td class="text-right">{toplamPOSGider()}</td>
-			</tr>
-			<tr>
-				<td colspan="3">Toplam</td>
-				<td class="text-right">{toplamGiderHesapla()}</td>
-			</tr>
-		</tfoot>
-	</table>
-</div>
-
-<Modal
-	bind:open={giderStateModal}
-	triggerBase="btn preset-tonal"
-	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
-	backdropClasses="backdrop-blur-sm"
->
-	{#snippet trigger()}Gider ekle <Minus />{/snippet}
-	{#snippet content()}
-		<header class="flex items-center">
-			<h2 class="h2">Gider</h2>
-			<Minus />
-		</header>
-		<div class="space-y-4">
-			<Combobox
-				data={comboboxData}
-				bind:value={selectedGiderKalemi}
-				label="Gider kalemi"
-				placeholder="Seç..."
-			/>
+				<tr class="opacity-50">
+					<td colspan="2">POS</td>
+					<td class="text-right">{toplamPOSGelir()}</td>
+				</tr>
+				<tr>
+					<td colspan="2">Toplam</td>
+					<td class="text-right">{toplamGelirHesapla()}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<Modal
+		bind:open={gelirStateModal}
+		triggerBase="btn preset-tonal"
+		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
+		backdropClasses="backdrop-blur-sm"
+	>
+		{#snippet trigger()}Gelir ekle <Plus />{/snippet}
+		{#snippet content()}
+			<header class="flex flex-row items-center">
+				<h2 class="h2">Gelir</h2>
+				<Plus />
+			</header>
 
 			<label class="label">
 				<span class="label-text">Fiyat</span>
 				<input
-					bind:value={giderMiktar}
+					bind:value={gelirMiktar}
 					class="input"
 					type="text"
 					placeholder="0"
-					onkeydown={(e) => e.key === 'Enter' && giderEkle()}
+					onkeydown={(e) => e.key === 'Enter' && gelirEkle()}
 				/>
 			</label>
 
 			<div class="space-y-1">
 				<label class="flex items-center space-x-2">
 					<input
-						bind:group={selectedGiderTipi}
+						bind:group={selectedGelirTipi}
 						class="radio"
 						type="radio"
 						checked
@@ -475,9 +319,10 @@
 					/>
 					<p>Nakit</p>
 				</label>
+
 				<label class="flex items-center space-x-2">
 					<input
-						bind:group={selectedGiderTipi}
+						bind:group={selectedGelirTipi}
 						class="radio"
 						type="radio"
 						name="radio-direct"
@@ -485,16 +330,169 @@
 					/>
 					<p>Kredi kartı</p>
 				</label>
-			</div>
-		</div>
-		<footer class="flex justify-end gap-4">
-			<button type="button" class="btn preset-tonal" onclick={giderModalClose}>İptal</button>
-			<button type="button" class="btn preset-filled" onclick={giderEkle}>Ekle</button>
-		</footer>
-	{/snippet}
-</Modal>
 
-<!-- Confirmation Modal -->
+				<label class="flex items-center space-x-2">
+					<input
+						bind:group={selectedGelirTipi}
+						class="radio"
+						type="radio"
+						name="radio-direct"
+						value="Getir"
+					/>
+					<p class="text-[#5a3bb6]">Getir</p>
+				</label>
+
+				<label class="flex items-center space-x-2">
+					<input
+						bind:group={selectedGelirTipi}
+						class="radio"
+						type="radio"
+						name="radio-direct"
+						value="Trendyol"
+					/>
+					<p class="text-[#fb641f]">Trendyol</p>
+				</label>
+
+				<label class="flex items-center space-x-2">
+					<input
+						bind:group={selectedGelirTipi}
+						class="radio"
+						type="radio"
+						name="radio-direct"
+						value="Yemeksepeti"
+					/>
+					<p class="text-[#e03052]">Yemeksepeti</p>
+				</label>
+
+				<p class="ml-28 pt-4 text-right text-sm">
+					Kart faiz: % {faiz.toString().replace('.', ',')}
+				</p>
+			</div>
+			<footer class="flex justify-end gap-4">
+				<button type="button" class="btn preset-tonal" onclick={gelirModalClose}>İptal</button>
+				<button type="button" class="btn preset-filled" onclick={gelirEkle}>Ekle</button>
+			</footer>
+		{/snippet}
+	</Modal>
+
+	<div class="table-wrap pb-4">
+		<table class="table caption-top">
+			<caption class="pt-4">Gider durumu</caption>
+			<thead>
+				<tr>
+					<th class="!text-right"></th>
+					<th class="!text-right"></th>
+					<th class="!text-right"></th>
+					<th class="!text-right">Fiyat</th>
+				</tr>
+			</thead>
+			<tbody class={giders.length > 0 ? 'hover:[&>tr]:preset-tonal-primary' : ''}>
+				{#if giders && giders.length > 0}
+					{#each giders as gider}
+						<tr class="group !text-right">
+							<td class="text-left">
+								<button
+									onclick={() => openConfirmModalForOutgoing(gider, giderSil)}
+									class="w-2 text-center opacity-0 transition-opacity hover:text-red-500 group-hover:opacity-100"
+								>
+									<NotebookPen size="16" />
+								</button>
+							</td>
+							<td>{gider.item}</td>
+							<td class="!text-right"
+								>{#if gider.with === 'POS'}<CreditCard color="orange" />{/if}</td
+							>
+							<td>{formatter(Number(gider.price))}</td>
+						</tr>
+					{/each}
+				{:else}
+					<tr>
+						<td colspan="4" class="text-center">Lütfen veri giriniz.</td>
+					</tr>
+				{/if}
+			</tbody>
+			<tfoot>
+				<tr class="opacity-50">
+					<td colspan="3">Nakit</td>
+					<td class="text-right">{toplamNakitGider()}</td>
+				</tr>
+				<tr class="opacity-50">
+					<td colspan="3">Kredi Kartı</td>
+					<td class="text-right">{toplamPOSGider()}</td>
+				</tr>
+				<tr>
+					<td colspan="3">Toplam</td>
+					<td class="text-right">{toplamGiderHesapla()}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<Modal
+		bind:open={giderStateModal}
+		triggerBase="btn preset-tonal"
+		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
+		backdropClasses="backdrop-blur-sm"
+	>
+		{#snippet trigger()}Gider ekle <Minus />{/snippet}
+		{#snippet content()}
+			<header class="flex items-center">
+				<h2 class="h2">Gider</h2>
+				<Minus />
+			</header>
+			<div class="space-y-4">
+				<Combobox
+					data={comboboxData}
+					bind:value={selectedGiderKalemi}
+					label="Gider kalemi"
+					placeholder="Seç..."
+				/>
+
+				<label class="label">
+					<span class="label-text">Fiyat</span>
+					<input
+						bind:value={giderMiktar}
+						class="input"
+						type="text"
+						placeholder="0"
+						onkeydown={(e) => e.key === 'Enter' && giderEkle()}
+					/>
+				</label>
+
+				<div class="space-y-1">
+					<label class="flex items-center space-x-2">
+						<input
+							bind:group={selectedGiderTipi}
+							class="radio"
+							type="radio"
+							checked
+							name="radio-direct"
+							value="Nakit"
+						/>
+						<p>Nakit</p>
+					</label>
+					<label class="flex items-center space-x-2">
+						<input
+							bind:group={selectedGiderTipi}
+							class="radio"
+							type="radio"
+							name="radio-direct"
+							value="POS"
+						/>
+						<p>Kredi kartı</p>
+					</label>
+				</div>
+			</div>
+			<footer class="flex justify-end gap-4">
+				<button type="button" class="btn preset-tonal" onclick={giderModalClose}>İptal</button>
+				<button type="button" class="btn preset-filled" onclick={giderEkle}>Ekle</button>
+			</footer>
+		{/snippet}
+	</Modal>
+{:catch error}
+	<p>{error.message}</p>
+{/await}
+
+<!-- Delete Confirmation Modal -->
 <Modal bind:open={confirmModalOpen} backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
 		<div
@@ -521,11 +519,6 @@
 		</div>
 	{/snippet}
 </Modal>
-
-<!--<pre>{JSON.stringify(allGelirs, null, 2)}</pre>-->
-<!--<pre>{JSON.stringify(allGiders, null, 2)}</pre>-->
-
-<!--<GoToDate />-->
 
 <div class="text-center text-sm text-success-400">
 	<a data-sveltekit-reload href="{dateToSlug(data.date)}/rapor">Aylık Toplam Göster</a>
