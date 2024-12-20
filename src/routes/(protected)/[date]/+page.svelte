@@ -497,11 +497,11 @@
 <!-- Confirmation Modal -->
 <Modal bind:open={confirmModalOpen} backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
-		<!-- svelte-ignore a11y_invalid_attribute -->
-		<a
-			href="#"
+		<div
 			class="card max-w-screen-sm space-y-4 p-4 shadow-xl bg-surface-100-900"
 			aria-labelledby="modal-header"
+			role="button"
+			tabindex="0"
 			onkeydown={(event) => {
 				if (event.key === 'Enter') {
 					confirmDelete();
@@ -518,7 +518,7 @@
 				</button>
 				<button type="button" class="btn preset-filled" onclick={confirmDelete}>Evet</button>
 			</footer>
-		</a>
+		</div>
 	{/snippet}
 </Modal>
 
