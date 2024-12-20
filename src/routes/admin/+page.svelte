@@ -2,6 +2,18 @@
 	import { browser } from '$app/environment';
 	import { authClient } from '$lib/auth-client';
 	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
+	import { getContext } from 'svelte';
+	import { type ToastContext } from '@skeletonlabs/skeleton-svelte';
+
+	export const toast: ToastContext = getContext('toast');
+
+	function triggerError() {
+		toast.create({
+			title: 'Hata: Giriş yapılamadı.',
+			description: 'Email veya parola hatalı olabilir.',
+			type: 'info'
+		});
+	}
 
 	let isLoading = $state(false);
 	let email = $state('');
@@ -22,7 +34,7 @@
 		if (error) {
 			isLoading = false;
 			password = '';
-			return alert('"HATALI EMAİL VEYA ŞİFRE"');
+			return triggerError();
 		}
 
 		window.location.href = '/';
