@@ -10,10 +10,8 @@ export async function load({ params }) {
 		throw error(404, 'Geçersiz tarih formatı.');
 	}
 
-	const [monthlyIncomes, monthlyOutgoings] = await Promise.all([
-		getIncomesByMonth(dateToSlug(date)),
-		getOutgoingsByMonth(dateToSlug(date))
-	]);
+	const monthlyIncomes = getIncomesByMonth(dateToSlug(date));
+	const monthlyOutgoings = getOutgoingsByMonth(dateToSlug(date));
 
 	return {
 		date,
