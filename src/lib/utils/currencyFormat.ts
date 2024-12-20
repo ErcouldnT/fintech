@@ -8,5 +8,5 @@ export const formatter = (currency: number | string) => {
 		currency = Number(currency);
 	}
 
-	return formatter.format(currency).slice(1) + ' ₺'; // ₺1.000.985,10
+	return formatter.format(currency).slice(1) + ' \u20BA'; // ₺1.000.985,10
 };
