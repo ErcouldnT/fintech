@@ -368,7 +368,9 @@
 				<p class="text-[#e03052]">Yemeksepeti</p>
 			</label>
 
-			<p class="text-right text-sm">Kart faiz: % {faiz.toString().replace('.', ',')}</p>
+			<p class="ml-28 pt-4 text-right text-sm">
+				Kart faiz: % {faiz.toString().replace('.', ',')}
+			</p>
 		</div>
 		<footer class="flex justify-end gap-4">
 			<button type="button" class="btn preset-tonal" onclick={gelirModalClose}>İptal</button>
