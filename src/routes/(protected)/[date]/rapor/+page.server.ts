@@ -11,8 +11,8 @@ export async function load({ params }) {
 	}
 
 	// TODO: Bunları Promise olarak gönder ön tarafa. Daha hızlı olacak.
-	const monthlyIncomes = getIncomesByMonth(dateToSlug(date));
-	const monthlyOutgoings = getOutgoingsByMonth(dateToSlug(date));
+	const monthlyIncomes = await getIncomesByMonth(dateToSlug(date));
+	const monthlyOutgoings = await getOutgoingsByMonth(dateToSlug(date));
 
 	return {
 		date,

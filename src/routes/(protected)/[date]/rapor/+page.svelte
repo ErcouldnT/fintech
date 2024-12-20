@@ -30,7 +30,7 @@
 	</a>
 </div>
 
-<MonthlyReport incomesPromise={data.monthlyIncomes} outgoingsPromise={data.monthlyOutgoings} />
+<MonthlyReport incomes={data.monthlyIncomes} outgoings={data.monthlyOutgoings} />
 
 <div class="text-center text-sm text-success-400">
 	<a data-sveltekit-reload href="/">Ana Sayfaya Git</a>

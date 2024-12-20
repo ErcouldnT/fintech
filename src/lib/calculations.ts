@@ -101,24 +101,3 @@ export function getOutgoingSummary(list: SelectOutgoing[]): {
 
 	return { creditCardTotal, cashTotal };
 }
-
-export const getMonthlyIncomes = (incomes: SelectIncome[]) => getTotalIncomes(incomes);
-export const getMonthlyOutgoings = (outgoings: SelectOutgoing[]) => getTotalOutgoings(outgoings);
-export const getTotalIncome = (monthlyIncomes: ReturnType<typeof getTotalIncomes>) =>
-	getTotalPrice(monthlyIncomes);
-export const getTotalOutgoing = (monthlyOutgoings: ReturnType<typeof getTotalOutgoings>) =>
-	getTotalPrice(monthlyOutgoings);
-export const getProfitLoss = (totalIncome: number, totalOutgoing: number) =>
-	totalIncome - totalOutgoing;
-export const getProfitLossPercentage = (totalIncome: number, profitLoss: number) =>
-	totalIncome > 0 ? (profitLoss / totalIncome) * 100 : 0;
-export const getDailyAverageDifference = (
-	totalIncome: number,
-	totalDayCountOfIncomes: number,
-	totalOutgoing: number,
-	totalDayCountOfOutgoings: number
-) => totalIncome / totalDayCountOfIncomes - totalOutgoing / totalDayCountOfOutgoings;
-export const getGreaterDayCount = (
-	totalDayCountOfIncomes: number,
-	totalDayCountOfOutgoings: number
-) => Math.max(totalDayCountOfIncomes, totalDayCountOfOutgoings);
