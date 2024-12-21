@@ -2,11 +2,21 @@
 	import { authClient } from '$lib/auth-client';
 	import GoToDate from '$lib/components/GoToDate.svelte';
 	import { goto, invalidateAll } from '$app/navigation';
+	import { getContext } from 'svelte';
+	import { type ToastContext } from '@skeletonlabs/skeleton-svelte';
 
-	// const session = authClient.useSession();
+	export const toast: ToastContext = getContext('toast');
+
+	function triggerSignOutToast() {
+		toast.create({
+			title: 'Çıkış işlemi başarılı',
+			description: 'Yeniden giriş yapabilirsiniz.',
+			type: 'info',
+			duration: 5000
+		});
+	}
 
 	let { data } = $props();
-
 	let disabled = $state(false);
 </script>
 
@@ -26,6 +36,7 @@
 				onclick={async () => {
 					disabled = true;
 					await authClient.signOut();
+					triggerSignOutToast();
 					await invalidateAll();
 				}}
 			>

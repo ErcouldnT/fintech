@@ -20,7 +20,7 @@
 	function triggerSuccess(username: string) {
 		toast.create({
 			title: username,
-			description: 'Başarıyla giriş yapıldı.',
+			description: 'Başarıyla sisteme giriş yapıldı.',
 			type: 'success',
 			duration: 5000
 		});
