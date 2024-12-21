@@ -8,11 +8,21 @@
 
 	export const toast: ToastContext = getContext('toast');
 
-	function triggerToast() {
+	function triggerInfo() {
 		toast.create({
-			title: 'Hata: Giriş yapılamadı.',
+			title: 'Hata: Giriş yapılamadı',
 			description: 'Email veya parola hatalı olabilir.',
-			type: 'info'
+			type: 'info',
+			duration: 5000
+		});
+	}
+
+	function triggerSuccess(username: string) {
+		toast.create({
+			title: username,
+			description: 'Başarıyla giriş yapıldı.',
+			type: 'success',
+			duration: 5000
 		});
 	}
 
@@ -25,7 +35,6 @@
 		e.preventDefault();
 		isLoading = true;
 
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { data, error } = await authClient.signIn.email({
 			email: email,
 			password: password
@@ -35,7 +44,11 @@
 		if (error) {
 			isLoading = false;
 			password = '';
-			return triggerToast();
+			return triggerInfo();
+		}
+
+		if (data) {
+			triggerSuccess(data.user.name);
 		}
 
 		// window.location.href = '/';
