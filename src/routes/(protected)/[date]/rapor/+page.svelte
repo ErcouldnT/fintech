@@ -6,10 +6,6 @@
 	import { goto } from '$app/navigation';
 
 	let { data } = $props();
-
-	const handleNavigation = async (url: string) => {
-		await goto(url);
-	};
 </script>
 
 <div class="text-center">
@@ -20,20 +16,12 @@
 <hr class="hr border-t-2" />
 
 <div class="flex justify-between gap-4 text-sm">
-	<button
-		type="button"
-		class="btn"
-		onclick={() => handleNavigation('/' + previousMonth(data.date) + '/rapor')}
-	>
+	<button type="button" class="btn" onclick={() => goto('/' + previousMonth(data.date) + '/rapor')}>
 		<ChevronLeft />
 		<span>Önceki ay</span>
 	</button>
 
-	<button
-		type="button"
-		class="btn"
-		onclick={() => handleNavigation('/' + nextMonth(data.date) + '/rapor')}
-	>
+	<button type="button" class="btn" onclick={() => goto('/' + nextMonth(data.date) + '/rapor')}>
 		<span>Sonraki ay</span>
 		<ChevronRight />
 	</button>
@@ -44,5 +32,5 @@
 {/key}
 
 <div class="text-center text-sm text-success-400">
-	<a data-sveltekit-reload href="/">Ana Sayfaya Git</a>
+	<button data-sveltekit-reload onclick={() => goto('/')}>Ana Sayfaya Git</button>
 </div>
