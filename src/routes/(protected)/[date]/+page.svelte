@@ -14,6 +14,28 @@
 	import DayChanger from '$lib/components/DayChanger.svelte';
 	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
 	import { goto, invalidateAll } from '$app/navigation';
+	import { getContext } from 'svelte';
+	import { type ToastContext } from '@skeletonlabs/skeleton-svelte';
+
+	export const toast: ToastContext = getContext('toast');
+
+	function triggerSuccessToast(item: string) {
+		toast.create({
+			title: item,
+			description: 'Listeye eklendi.',
+			type: 'success',
+			duration: 5000
+		});
+	}
+
+	function triggerDeleteToast(item: string) {
+		toast.create({
+			title: item,
+			description: 'Listeden silindi.',
+			type: 'info',
+			duration: 5000
+		});
+	}
 
 	let { data } = $props();
 
@@ -52,8 +74,8 @@
 			}
 		});
 
-		// allGelirs.push(gelir);
 		gelirModalClose();
+		triggerSuccessToast(gelir.with + ' ' + formatter(Number(gelir.price)));
 		reloadPage();
 	};
 
@@ -96,8 +118,8 @@
 			}
 		});
 
-		// allGiders.push(gider);
 		giderModalClose();
+		triggerSuccessToast(gider.item + ' ' + formatter(Number(gider.price)));
 		reloadPage();
 	};
 
@@ -206,8 +228,14 @@
 		if (selectedItemToDelete) {
 			if ('item' in selectedItemToDelete) {
 				await deleteOutgoingAction(selectedItemToDelete as SelectOutgoing);
+				triggerDeleteToast(
+					selectedItemToDelete.item + ' ' + formatter(Number(selectedItemToDelete.price))
+				);
 			} else {
 				await deleteIncomeAction(selectedItemToDelete as SelectIncome);
+				triggerDeleteToast(
+					selectedItemToDelete.with + ' ' + formatter(Number(selectedItemToDelete.price))
+				);
 			}
 			confirmModalOpen = false;
 		}
