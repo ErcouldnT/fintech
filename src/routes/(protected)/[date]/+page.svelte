@@ -13,12 +13,13 @@
 	import DayTitle from '$lib/components/DayTitle.svelte';
 	import DayChanger from '$lib/components/DayChanger.svelte';
 	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 
 	let { data } = $props();
 
 	const reloadPage = () => {
-		window.location.href = '/' + dateToSlug(data.date);
+		goto('/' + dateToSlug(data.date));
+		invalidateAll();
 	};
 
 	// Gelir
