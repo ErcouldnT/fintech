@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto, invalidateAll } from '$app/navigation';
 	import { browser } from '$app/environment';
 	import { authClient } from '$lib/auth-client';
 	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
@@ -7,7 +8,7 @@
 
 	export const toast: ToastContext = getContext('toast');
 
-	function triggerError() {
+	function triggerToast() {
 		toast.create({
 			title: 'Hata: Giriş yapılamadı.',
 			description: 'Email veya parola hatalı olabilir.',
@@ -34,10 +35,13 @@
 		if (error) {
 			isLoading = false;
 			password = '';
-			return triggerError();
+			return triggerToast();
 		}
 
-		window.location.href = '/';
+		// window.location.href = '/';
+		await goto('/');
+		await invalidateAll();
+		isLoading = false;
 	};
 
 	// const signUp = async (e) => {
@@ -75,7 +79,7 @@
 			<span class="label-text">Şifre</span>
 			<input bind:value={password} class="input" type="password" name="password" placeholder="" />
 		</label>
-		<button onclick={handleSignIn} class="btn preset-tonal">Giriş yap </button>
+		<button onclick={handleSignIn} class="btn preset-tonal">Giriş yap</button>
 	</form>
 {/if}
 
