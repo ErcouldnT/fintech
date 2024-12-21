@@ -13,6 +13,7 @@
 	import DayTitle from '$lib/components/DayTitle.svelte';
 	import DayChanger from '$lib/components/DayChanger.svelte';
 	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
+	import { goto } from '$app/navigation';
 
 	let { data } = $props();
 
@@ -521,5 +522,9 @@
 </Modal>
 
 <div class="text-center text-sm text-success-400">
-	<a data-sveltekit-reload href="{dateToSlug(data.date)}/rapor">Aylık Toplam Göster</a>
+	<button
+		onclick={() => {
+			goto(`${dateToSlug(data.date)}/rapor`);
+		}}>Aylık Toplam Göster</button
+	>
 </div>

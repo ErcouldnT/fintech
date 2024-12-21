@@ -1,18 +1,19 @@
 <script lang="ts">
 	import { nextDay, previousDay } from '$lib/utils/dateFormat';
 	import { ChevronLeft, ChevronRight } from 'lucide-svelte';
+	import { goto } from '$app/navigation';
 
 	export let date: Date;
 </script>
 
 <div class="flex justify-between gap-4 text-sm">
-	<a href={'/' + previousDay(date)} data-sveltekit-reload type="button" class="btn">
+	<button type="button" class="btn" onclick={() => goto('/' + previousDay(date))}>
 		<ChevronLeft />
 		<span>Önceki gün</span>
-	</a>
+	</button>
 
-	<a href={'/' + nextDay(date)} data-sveltekit-reload type="button" class="btn">
+	<button type="button" class="btn" onclick={() => goto('/' + nextDay(date))}>
 		<span>Sonraki gün</span>
 		<ChevronRight />
-	</a>
+	</button>
 </div>
