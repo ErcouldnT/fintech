@@ -44,10 +44,11 @@
 		profitLoss = totalIncome - totalOutgoing;
 		profitLossPercentage = totalIncome > 0 ? (profitLoss / totalIncome) * 100 : 0;
 
-		dailyAverageDifference =
-			totalIncome / totalDayCountOfIncomes - totalOutgoing / totalDayCountOfOutgoings;
-
 		greaterDayCount = Math.max(totalDayCountOfIncomes, totalDayCountOfOutgoings);
+
+		dailyAverageDifference =
+			Number((totalIncome / greaterDayCount).toFixed(2)) -
+			Number((totalOutgoing / greaterDayCount).toFixed(2));
 
 		outgoingSummary = getOutgoingSummary(giders);
 
