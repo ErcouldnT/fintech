@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { authClient } from '$lib/auth-client';
 	import GoToDate from '$lib/components/GoToDate.svelte';
+	import { goto, invalidateAll } from '$app/navigation';
 
 	// const session = authClient.useSession();
 
 	let { data } = $props();
+
+	let disabled = $state(false);
 </script>
 
 <h1 class="text-center text-amber-500">Onur Muhasebe</h1>
@@ -18,10 +21,12 @@
 				{data.session.user.name}
 			</p>
 			<button
+				{disabled}
 				class="btn preset-tonal"
 				onclick={async () => {
+					disabled = true;
 					await authClient.signOut();
-					window.location.href = '/';
+					await invalidateAll();
 				}}
 			>
 				Çıkış yap
@@ -29,7 +34,14 @@
 		</div>
 	{:else}
 		<div class="text-center">
-			<a data-sveltekit-reload href="/admin" class="btn preset-tonal">Giriş yap</a>
+			<button
+				data-sveltekit-reload
+				class="btn preset-tonal"
+				onclick={async () => {
+					disabled = true;
+					await goto('/admin');
+				}}>Giriş yap</button
+			>
 		</div>
 	{/if}
 </div>
