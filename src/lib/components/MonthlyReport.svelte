@@ -55,15 +55,55 @@
 		loading = false;
 	};
 
-	const detayGoster = async (gider: SelectOutgoing) => {
-    const giderler = await outgoings;
-    const giderDetay = giderler.filter((g) => g.item === gider.item);
-    const tarihListesi = giderDetay.map(g => g.date + " tarihinde " + formatter(g.price)).join("\n");
-    alert("Bu ay " + gider.item + " için " + giderDetay.length + " kere ödeme yapıldı." + "\n\n" + tarihListesi || "Bu gider için tarih bulunamadı.");
+	let giderDetay = "";
+
+	const detayGoster = async (gider) => {
+		const giderler = await outgoings;
+    giderDetay = giderler.filter((g) => g.item === gider.item);
+    // const tarihListesi = giderDetay.map(g => g.date + " tarihinde " + formatter(g.price)).join("\n");
+		detayTitle = gider.item + " için " + giderDetay.length + " adet";
+    // detayContent = (tarihListesi || "Bu gider için tarih bulunamadı.");
+		confirmModalOpen = true;
 	};
 
 	fetchAllData();
-</script>
+
+	import { Modal } from '@skeletonlabs/skeleton-svelte';
+	let confirmModalOpen = false;
+	let detayTitle = "";
+	let detayContent = "";
+	</script>
+
+<Modal bind:open={confirmModalOpen} backdropClasses="backdrop-blur-sm">
+	{#snippet content()}
+		<div
+			class="card max-w-screen-sm space-y-4 p-4 shadow-xl bg-surface-100-900"
+			aria-labelledby="modal-header"
+			role="button"
+			tabindex="0"
+			onkeydown={(event) => {
+				if (event.key === 'Enter') {
+					confirmModalOpen = false;
+				}
+			}}
+		>
+			<header>
+				<h2 class="h2">{detayTitle}</h2>
+			</header>
+			<div class="max-h-96 overflow-y-auto p-2">
+				{#each giderDetay as gider}
+					<p>{gider.date} tarihinde {formatter(gider.price)}</p>
+				{/each}
+			</div>
+			<footer class="flex justify-end gap-4">
+				<button type="button" class="btn preset-tonal" onclick={() => (confirmModalOpen = false)}>
+					Kapat
+				</button>
+				<!-- <button type="button" class="btn preset-filled" onclick={confirmDelete}>Evet</button> -->
+			</footer>
+		</div>
+	{/snippet}
+</Modal>
 
 {#if loading}
 	<LoadingSpinner />
