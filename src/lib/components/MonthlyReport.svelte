@@ -55,6 +55,13 @@
 		loading = false;
 	};
 
+	const detayGoster = async (gider: SelectOutgoing) => {
+    const giderler = await outgoings;
+    const giderDetay = giderler.filter((g) => g.item === gider.item);
+    const tarihListesi = giderDetay.map(g => g.date + " tarihinde " + formatter(g.price)).join("\n");
+    alert("Bu ay " + gider.item + " için " + giderDetay.length + " kere ödeme yapıldı." + "\n\n" + tarihListesi || "Bu gider için tarih bulunamadı.");
+	};
+
 	fetchAllData();
 </script>
 
@@ -184,7 +191,7 @@
 			<tbody class={monthlyOutgoings.length > 0 ? 'hover:[&>tr]:preset-tonal-primary' : ''}>
 				{#if monthlyOutgoings.length > 0}
 					{#each monthlyOutgoings as outgoing}
-						<tr class="!text-right">
+						<tr onclick={() => detayGoster(outgoing)} class="!text-right cursor-pointer">
 							<td>{outgoing.item}</td>
 							<td>{formatter(outgoing.price)}</td>
 						</tr>
