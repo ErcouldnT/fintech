@@ -55,14 +55,14 @@
 		loading = false;
 	};
 
-	let giderDetay = "";
+	let giderDetay: SelectOutgoing[] = [];
 
-	const detayGoster = async (gider) => {
+	const detayGoster = async (gider: monthlyOutgoing) => {
 		const giderler = await outgoings;
-    giderDetay = giderler.filter((g) => g.item === gider.item);
-    // const tarihListesi = giderDetay.map(g => g.date + " tarihinde " + formatter(g.price)).join("\n");
-		detayTitle = gider.item + " için " + giderDetay.length + " adet";
-    // detayContent = (tarihListesi || "Bu gider için tarih bulunamadı.");
+		giderDetay = giderler.filter((g) => g.item === gider.item);
+		// const tarihListesi = giderDetay.map(g => g.date + " tarihinde " + formatter(g.price)).join("\n");
+		detayTitle = gider.item + ' için ' + giderDetay.length + ' adet';
+		// detayContent = (tarihListesi || "Bu gider için tarih bulunamadı.");
 		confirmModalOpen = true;
 	};
 
@@ -70,9 +70,8 @@
 
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	let confirmModalOpen = false;
-	let detayTitle = "";
-	let detayContent = "";
-	</script>
+	let detayTitle = '';
+</script>
 
 <Modal bind:open={confirmModalOpen} backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
@@ -231,7 +230,7 @@
 			<tbody class={monthlyOutgoings.length > 0 ? 'hover:[&>tr]:preset-tonal-primary' : ''}>
 				{#if monthlyOutgoings.length > 0}
 					{#each monthlyOutgoings as outgoing}
-						<tr onclick={() => detayGoster(outgoing)} class="!text-right cursor-pointer">
+						<tr onclick={() => detayGoster(outgoing)} class="cursor-pointer !text-right">
 							<td>{outgoing.item}</td>
 							<td>{formatter(outgoing.price)}</td>
 						</tr>
